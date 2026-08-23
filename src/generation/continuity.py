@@ -22,9 +22,14 @@ day's lesson in a teaching series.
 
 Respond ONLY with valid JSON, no markdown fences:
 {
-  "recap_summary": "1-2 sentences summarizing what THIS lesson taught, \
-written so it can be used verbatim as 'Yesterday we covered...' in \
-tomorrow's post. Be specific, not vague.",
+  "recap_summary": "1-2 sentences stating, NEUTRALLY, what THIS lesson \
+covered -- e.g. 'Introduced NLP and its real-world applications, covering \
+search, chatbots, and text classification.' Do NOT write it in the form \
+'Yesterday we covered...' or 'Today we covered...' -- no time-reference \
+framing at all. This exact text gets reused in two different places (as \
+today's own summary, and later as tomorrow's 'previous day' recap), so it \
+must read correctly in both contexts, which only works if it's phrased \
+neutrally. Be specific, not vague.",
   "key_takeaways": [
     "3-5 short, specific, standalone takeaways from this lesson, each \
 under 20 words"

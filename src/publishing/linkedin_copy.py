@@ -92,15 +92,15 @@ def generate_linkedin_copy(
     lines = [header, ""]
 
     if previous_summary:
-        lines.append(f"📌 Previously (Day {str(day_number - 1).zfill(day_width)}): {previous_summary}")
+        lines.append(f"📌 Yesterday's Recap: {previous_summary}")
         lines.append("")
 
-    lines.append(f"📖 Today: {today_summary}")
+    lines.append(f"📖 Today's Lesson: {today_summary}")
     lines.append("")
 
     takeaways = _extract_key_takeaways(post_markdown)
     if takeaways:
-        lines.append("Key takeaways:")
+        lines.append("💡 Key Takeaways:")
         lines.extend(f"- {t}" for t in takeaways)
         lines.append("")
 
@@ -112,7 +112,13 @@ def generate_linkedin_copy(
     lines.append("")
 
     lines.append(
-        f'🤖 Created by {product_name} — the AI-powered tutor automation behind "{series_name}."'
+        f'✨ Curated by {product_name} — your AI-powered tutor automation '
+        f'behind "{series_name}," turning a 105-day AI curriculum into one '
+        f"lesson a day."
     )
+    lines.append("")
+    lines.append("Happy Learning! 🎉")
+    lines.append("")
+    lines.append("Feel free to comment your doubts below 👇")
 
     return "\n".join(lines)
