@@ -1,58 +1,23 @@
 """
-Generates a short, LinkedIn-native post promoting one day's lesson.
+Generates a LinkedIn-native post promoting one day's lesson.
 
-Design notes carried over from BlogMind (both lessons learned the hard way,
-applied here from day one instead of relearning them):
+Deliberately fully deterministic -- no LLM call at all. Every piece of
+content used here was already generated (and trusted) once by the main
+pipeline: today's recap_summary and the previous day's recap_summary both
+already exist, and the Key Takeaways bullets are already sitting in the
+lesson's own Markdown body. Re-summarizing any of this via a second LLM
+call would just introduce a new point of failure for no benefit -- the
+data we need already exists and is already accurate.
 
-1. Structured JSON generation, deterministic Python assembly -- an LLM
-   asked to produce fully-formatted free text with mandatory sections
-   (hashtags, specific structure) proved unreliable; asking only for
-   content and assembling formatting in code is not.
-
-2. No raw URLs in the commentary body. LinkedIn's Posts API silently
-   truncates the commentary text at the point a URL appears when that URL
-   duplicates the one already attached via content.article -- confirmed by
-   LinkedIn's own help docs (a shared link with no text after it gets
-   hidden from the share). The dev.to link is attached separately as a
-   proper preview card via publish_to_linkedin's content.article.source;
-   it is never embedded as text here.
+This also carries forward the lesson learned the hard way in BlogMind:
+never embed a raw URL in the LinkedIn commentary body that duplicates the
+one already attached via content.article.source -- LinkedIn silently
+truncates the post at that point. The dev.to link is attached separately
+in publish_to_linkedin, never as text here.
 """
 from __future__ import annotations
 
-import json
-
-from src.utils.claude_client import call_claude
-
-LINKEDIN_COPY_SYSTEM = """You extract the content for a LinkedIn post
-promoting one day's lesson from "Zero to Agentic," a 105-day series taking
-engineers from NLP fundamentals to production AI agents. You are NOT
-responsible for final formatting -- just for picking the right content.
-
-Respond ONLY with valid JSON, no markdown fences, in this shape:
-{
-  "headline": "a punchy, specific headline about TODAY's topic, under 12 \
-words -- not the lesson title verbatim, a hook that makes the topic sound \
-worth knowing",
-  "context_lines": [
-    "1-2 sentences explaining what today's lesson actually teaches and why \
-it matters -- someone who hasn't clicked anything yet should understand \
-the core idea from this alone"
-  ],
-  "insight_bullets": [
-    "3-5 short, specific, standalone takeaways from today's lesson, each \
-under 20 words, pulled from the lesson's actual content (including its Key \
-Takeaways section if present)"
-  ],
-  "hashtags": ["#Exactly", "#Three", "#RelevantSpecificHashtags"]
-}
-
-Rules:
-- Never just tease an isolated stat with no explanation -- the reader must
-  understand the topic from headline + context alone.
-- hashtags must be specific to today's actual topic, never generic filler
-  like #AI or #innovation.
-- Voice: educational and welcoming, not salesy. This is a teaching series,
-  not an opinion blog -- confidence without hype."""
+import re
 
 
 def _to_bold_unicode(text: str) -> str:
@@ -70,44 +35,84 @@ def _to_bold_unicode(text: str) -> str:
     return "".join(result)
 
 
+def _extract_key_takeaways(post_markdown: str) -> list[str]:
+    """
+    Pulls the bullet list out of the lesson's own '## Key Takeaways'
+    section (always present -- assemble_final_post in pipeline.py
+    guarantees it). Avoids re-deriving takeaways via a second LLM call
+    when they already exist, correct, in the content itself.
+    """
+    lines = post_markdown.split("\n")
+    bullets = []
+    in_section = False
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("## Key Takeaways"):
+            in_section = True
+            continue
+        if in_section:
+            if stripped.startswith("##") or stripped == "---":
+                break
+            if stripped.startswith("- "):
+                bullets.append(stripped[2:].strip())
+    return bullets
+
+
+def _phase_hashtag(phase: str) -> str | None:
+    """'Phase 1 — NLP Foundations' -> '#NLPFoundations' (preserves acronyms)"""
+    if "—" not in phase:
+        return None
+    name_part = phase.split("—", 1)[1].strip()
+    skip_words = {"the", "a", "an", "of", "and", "to", "in", "for"}
+    words = [w for w in re.split(r"[^A-Za-z0-9]+", name_part) if w and w.lower() not in skip_words]
+    if not words:
+        return None
+    # Preserve words that are already all-caps (acronyms like NLP, AI, LLM,
+    # RAG) instead of capitalize()'ing them, which would lowercase the rest
+    # of the word ("NLP" -> "Nlp").
+    parts = [w if w.isupper() else w.capitalize() for w in words]
+    return "#" + "".join(parts)
+
+
 def generate_linkedin_copy(
     post_markdown: str,
     day_number: int,
     total_days: int,
-    series_name: str,
+    topic_title: str,
+    phase: str,
+    today_summary: str,
+    previous_summary: str | None,
+    series_name: str = "Zero to Agentic",
+    product_name: str = "SkillFlow",
 ) -> str:
-    """
-    devto_url is deliberately NOT a parameter here -- it's attached to the
-    LinkedIn post separately via content.article.source in
-    publish_to_linkedin, never as raw text in the commentary body.
-    """
-    user_prompt = f"""Day {day_number} of {total_days} -- full lesson content:
----
-{post_markdown}
----
+    day_width = len(str(total_days))
+    day_str = str(day_number).zfill(day_width)
+    header = _to_bold_unicode(f"Day {day_str}/{total_days}: {topic_title}")
 
-Extract the headline, context, insight bullets, and hashtags as instructed."""
+    lines = [header, ""]
 
-    raw = call_claude(system=LINKEDIN_COPY_SYSTEM, user=user_prompt, max_tokens=700)
+    if previous_summary:
+        lines.append(f"📌 Previously (Day {str(day_number - 1).zfill(day_width)}): {previous_summary}")
+        lines.append("")
 
-    try:
-        parts = json.loads(raw)
-    except json.JSONDecodeError as e:
-        raise RuntimeError(f"LinkedIn copy stage returned non-JSON:\n{raw}") from e
+    lines.append(f"📖 Today: {today_summary}")
+    lines.append("")
 
-    headline = _to_bold_unicode(f"Day {day_number}: {parts['headline']}")
-    context = "\n".join(parts["context_lines"])
-    bullets = "\n".join(f"- {b}" for b in parts["insight_bullets"])
-    hashtags = " ".join(parts["hashtags"][:3])
+    takeaways = _extract_key_takeaways(post_markdown)
+    if takeaways:
+        lines.append("Key takeaways:")
+        lines.extend(f"- {t}" for t in takeaways)
+        lines.append("")
 
-    post = f"""{headline}
+    hashtags = ["#AIEngineering", "#100DaysOfCode"]
+    phase_tag = _phase_hashtag(phase)
+    if phase_tag:
+        hashtags.append(phase_tag)
+    lines.append(" ".join(hashtags))
+    lines.append("")
 
-{context}
+    lines.append(
+        f'🤖 Created by {product_name} — the AI-powered tutor automation behind "{series_name}."'
+    )
 
-{bullets}
-
-📚 Day {day_number} of {total_days} in "{series_name}" — a daily series taking engineers from NLP fundamentals to production AI agents.
-
-{hashtags}"""
-
-    return post
+    return "\n".join(lines)

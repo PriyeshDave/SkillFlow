@@ -18,7 +18,7 @@ from src.publishing.devto_publish import publish_to_devto
 from src.publishing.linkedin_copy import generate_linkedin_copy
 from src.publishing.linkedin_publish import publish_to_linkedin
 from src.utils.settings import get_roadmap, get_settings
-from src.utils.storage import REPO_ROOT
+from src.utils.storage import REPO_ROOT, get_previous_post_summary
 
 
 def move_to_published(draft_path: str) -> Path:
@@ -57,11 +57,16 @@ def publish_all(draft_path: str, dry_run: bool = False) -> None:
     day_number = post.get("day")
     total_days = len(get_roadmap())
     series_name = settings["publishing"]["devto"]["series_name"]
+    previous_summary = get_previous_post_summary(day_number)
 
     linkedin_text = generate_linkedin_copy(
-        post.content,
+        post_markdown=post.content,
         day_number=day_number,
         total_days=total_days,
+        topic_title=post.get("topic_title"),
+        phase=post.get("phase"),
+        today_summary=post.get("recap_summary"),
+        previous_summary=previous_summary,
         series_name=series_name,
     )
     publish_to_linkedin(

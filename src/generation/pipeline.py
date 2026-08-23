@@ -122,6 +122,7 @@ def run_pipeline() -> str | None:
     post = frontmatter.Post(full_content)
     post["day"] = day_number
     post["phase"] = today_entry["phase"]
+    post["topic_title"] = today_entry["title"]
     post["title"] = f"Day {day_number}: {today_entry['title']}"
     post["recap_summary"] = continuity["recap_summary"]
     post["generated_at"] = datetime.now(timezone.utc).isoformat()
