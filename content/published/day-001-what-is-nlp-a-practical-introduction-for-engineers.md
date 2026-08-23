@@ -5,7 +5,7 @@ phase: Phase 1 — NLP Foundations
 recap_summary: Explained what Natural Language Processing (NLP) is, its importance
   in technology applications, common NLP tasks, and how computers process human language,
   including a basic word counting example.
-status: pending_review
+status: published
 title: 'Day 1: What Is NLP? A Practical Introduction for Engineers'
 topic_title: What Is NLP? A Practical Introduction for Engineers
 ---
