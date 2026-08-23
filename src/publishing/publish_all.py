@@ -65,6 +65,7 @@ def publish_all(draft_path: str, dry_run: bool = False) -> None:
         phase=post.get("phase"),
         today_summary=post.get("recap_summary"),
         previous_summary=previous_summary,
+        devto_url=devto_url,
         series_name=series_name,
     )
 

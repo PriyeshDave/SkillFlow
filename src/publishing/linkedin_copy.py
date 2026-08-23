@@ -5,15 +5,7 @@ Deliberately fully deterministic -- no LLM call at all. Every piece of
 content used here was already generated (and trusted) once by the main
 pipeline: today's recap_summary and the previous day's recap_summary both
 already exist, and the Key Takeaways bullets are already sitting in the
-lesson's own Markdown body. Re-summarizing any of this via a second LLM
-call would just introduce a new point of failure for no benefit -- the
-data we need already exists and is already accurate.
-
-This also carries forward the lesson learned the hard way in BlogMind:
-never embed a raw URL in the LinkedIn commentary body that duplicates the
-one already attached via content.article.source -- LinkedIn silently
-truncates the post at that point. The dev.to link is attached separately
-in publish_to_linkedin, never as text here.
+lesson's own Markdown body.
 """
 from __future__ import annotations
 
@@ -36,12 +28,6 @@ def _to_bold_unicode(text: str) -> str:
 
 
 def _extract_key_takeaways(post_markdown: str) -> list[str]:
-    """
-    Pulls the bullet list out of the lesson's own '## Key Takeaways'
-    section (always present -- assemble_final_post in pipeline.py
-    guarantees it). Avoids re-deriving takeaways via a second LLM call
-    when they already exist, correct, in the content itself.
-    """
     lines = post_markdown.split("\n")
     bullets = []
     in_section = False
@@ -59,7 +45,6 @@ def _extract_key_takeaways(post_markdown: str) -> list[str]:
 
 
 def _phase_hashtag(phase: str) -> str | None:
-    """'Phase 1 — NLP Foundations' -> '#NLPFoundations' (preserves acronyms)"""
     if "—" not in phase:
         return None
     name_part = phase.split("—", 1)[1].strip()
@@ -79,6 +64,7 @@ def generate_linkedin_copy(
     phase: str,
     today_summary: str,
     previous_summary: str | None,
+    devto_url: str,
     series_name: str = "Zero to Agentic In 105 Days",
     product_name: str = "SkillFlow",
 ) -> str:
@@ -89,7 +75,7 @@ def generate_linkedin_copy(
     lines = [header, ""]
 
     if previous_summary:
-        lines.append(f"📌 Yesterday's Recap: {previous_summary}")
+        lines.append(f"📌 Previous Day's Recap: {previous_summary}")
         lines.append("")
 
     lines.append(f"📖 Today's Lesson: {today_summary}")
@@ -117,5 +103,7 @@ def generate_linkedin_copy(
     lines.append("Happy Learning! 🎉")
     lines.append("")
     lines.append("Feel free to comment your doubts below 👇")
+    lines.append("")
+    lines.append(f"🔗 Read the full lesson: {devto_url}")
 
     return "\n".join(lines)
