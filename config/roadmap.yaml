@@ -1,0 +1,322 @@
+# Zero to Agentic -- source of truth for SkillFlow pipeline.
+# 105 days, walked sequentially. Each entry becomes one blog post.
+# Do not reorder existing entries once publishing has started -- the
+# pipeline tracks progress by index, and prev/next continuity in each
+# post depends on this exact order.
+
+roadmap:
+  - day: 1
+    phase: "Phase 1 — NLP Foundations"
+    title: "What Is NLP? A Practical Introduction for Engineers"
+  - day: 2
+    phase: "Phase 1 — NLP Foundations"
+    title: "Text Preprocessing: Tokenization and Normalization"
+  - day: 3
+    phase: "Phase 1 — NLP Foundations"
+    title: "Stopwords, Stemming, and Lemmatization"
+  - day: 4
+    phase: "Phase 1 — NLP Foundations"
+    title: "Bag-of-Words and Text Vectorization"
+  - day: 5
+    phase: "Phase 1 — NLP Foundations"
+    title: "TF-IDF Explained and Implemented from Scratch"
+  - day: 6
+    phase: "Phase 1 — NLP Foundations"
+    title: "N-Grams and Statistical Language Modeling"
+  - day: 7
+    phase: "Phase 1 — NLP Foundations"
+    title: "Part-of-Speech Tagging"
+  - day: 8
+    phase: "Phase 1 — NLP Foundations"
+    title: "Named Entity Recognition (NER) Fundamentals"
+  - day: 9
+    phase: "Phase 1 — NLP Foundations"
+    title: "Text Classification with Naive Bayes and Logistic Regression"
+  - day: 10
+    phase: "Phase 1 — NLP Foundations"
+    title: "Evaluation Metrics for NLP: Precision, Recall, F1, Confusion Matrix"
+  - day: 11
+    phase: "Phase 2 — Word Representations & Embeddings"
+    title: "Why One-Hot Encoding Fails: The Case for Embeddings"
+  - day: 12
+    phase: "Phase 2 — Word Representations & Embeddings"
+    title: "Word2Vec Explained: Skip-Gram and CBOW"
+  - day: 13
+    phase: "Phase 2 — Word Representations & Embeddings"
+    title: "GloVe: Global Vectors for Word Representation"
+  - day: 14
+    phase: "Phase 2 — Word Representations & Embeddings"
+    title: "FastText and Subword Embeddings"
+  - day: 15
+    phase: "Phase 2 — Word Representations & Embeddings"
+    title: "Visualizing Embeddings with t-SNE and PCA"
+  - day: 16
+    phase: "Phase 2 — Word Representations & Embeddings"
+    title: "Cosine Similarity and Semantic Search Basics"
+  - day: 17
+    phase: "Phase 3 — Sequence Models & Deep Learning for NLP"
+    title: "Neural Networks Refresher for NLP Engineers"
+  - day: 18
+    phase: "Phase 3 — Sequence Models & Deep Learning for NLP"
+    title: "Recurrent Neural Networks (RNNs) Explained"
+  - day: 19
+    phase: "Phase 3 — Sequence Models & Deep Learning for NLP"
+    title: "The Vanishing Gradient Problem"
+  - day: 20
+    phase: "Phase 3 — Sequence Models & Deep Learning for NLP"
+    title: "LSTM Networks Explained"
+  - day: 21
+    phase: "Phase 3 — Sequence Models & Deep Learning for NLP"
+    title: "GRU Networks Explained"
+  - day: 22
+    phase: "Phase 3 — Sequence Models & Deep Learning for NLP"
+    title: "Sequence-to-Sequence Models"
+  - day: 23
+    phase: "Phase 3 — Sequence Models & Deep Learning for NLP"
+    title: "The Encoder-Decoder Architecture"
+  - day: 24
+    phase: "Phase 3 — Sequence Models & Deep Learning for NLP"
+    title: "Attention Mechanism: The Core Intuition"
+  - day: 25
+    phase: "Phase 3 — Sequence Models & Deep Learning for NLP"
+    title: "Bahdanau vs. Luong Attention"
+  - day: 26
+    phase: "Phase 4 — The Transformer Revolution"
+    title: "\"Attention Is All You Need\": The Paper That Changed Everything"
+  - day: 27
+    phase: "Phase 4 — The Transformer Revolution"
+    title: "Self-Attention Explained From Scratch"
+  - day: 28
+    phase: "Phase 4 — The Transformer Revolution"
+    title: "Multi-Head Attention"
+  - day: 29
+    phase: "Phase 4 — The Transformer Revolution"
+    title: "Positional Encoding"
+  - day: 30
+    phase: "Phase 4 — The Transformer Revolution"
+    title: "The Transformer Encoder Architecture"
+  - day: 31
+    phase: "Phase 4 — The Transformer Revolution"
+    title: "The Transformer Decoder Architecture"
+  - day: 32
+    phase: "Phase 4 — The Transformer Revolution"
+    title: "Layer Normalization and Residual Connections"
+  - day: 33
+    phase: "Phase 4 — The Transformer Revolution"
+    title: "Building a Mini Transformer From Scratch (Code Walkthrough)"
+  - day: 34
+    phase: "Phase 5 — Pretraining & Language Models"
+    title: "What Is Pretraining? Transfer Learning for NLP"
+  - day: 35
+    phase: "Phase 5 — Pretraining & Language Models"
+    title: "BERT: Architecture and Masked Language Modeling"
+  - day: 36
+    phase: "Phase 5 — Pretraining & Language Models"
+    title: "Fine-Tuning BERT for Downstream Tasks"
+  - day: 37
+    phase: "Phase 5 — Pretraining & Language Models"
+    title: "GPT Architecture: Decoder-Only Transformers"
+  - day: 38
+    phase: "Phase 5 — Pretraining & Language Models"
+    title: "GPT-1 to GPT-3: The Evolution of Scale"
+  - day: 39
+    phase: "Phase 5 — Pretraining & Language Models"
+    title: "T5 and the Text-to-Text Framework"
+  - day: 40
+    phase: "Phase 5 — Pretraining & Language Models"
+    title: "Tokenization Deep Dive: BPE, WordPiece, SentencePiece"
+  - day: 41
+    phase: "Phase 5 — Pretraining & Language Models"
+    title: "Scaling Laws: Why Bigger Models Work Better"
+  - day: 42
+    phase: "Phase 6 — The Rise of LLMs"
+    title: "What Makes a Model \"Large\"? Defining LLMs"
+  - day: 43
+    phase: "Phase 6 — The Rise of LLMs"
+    title: "In-Context Learning Explained"
+  - day: 44
+    phase: "Phase 6 — The Rise of LLMs"
+    title: "Zero-Shot, One-Shot, and Few-Shot Learning"
+  - day: 45
+    phase: "Phase 6 — The Rise of LLMs"
+    title: "Emergent Abilities in LLMs"
+  - day: 46
+    phase: "Phase 6 — The Rise of LLMs"
+    title: "RLHF: Reinforcement Learning from Human Feedback"
+  - day: 47
+    phase: "Phase 6 — The Rise of LLMs"
+    title: "Instruction Tuning Explained"
+  - day: 48
+    phase: "Phase 6 — The Rise of LLMs"
+    title: "Open-Source vs. Closed-Source LLMs: The Landscape"
+  - day: 49
+    phase: "Phase 6 — The Rise of LLMs"
+    title: "Understanding Context Windows"
+  - day: 50
+    phase: "Phase 6 — The Rise of LLMs"
+    title: "Why LLMs Hallucinate"
+  - day: 51
+    phase: "Phase 6 — The Rise of LLMs"
+    title: "Multimodal LLMs: Vision, Audio, and Beyond"
+  - day: 52
+    phase: "Phase 7 — Prompt Engineering"
+    title: "Prompt Engineering Fundamentals"
+  - day: 53
+    phase: "Phase 7 — Prompt Engineering"
+    title: "Zero-Shot vs. Few-Shot Prompting"
+  - day: 54
+    phase: "Phase 7 — Prompt Engineering"
+    title: "Chain-of-Thought Prompting"
+  - day: 55
+    phase: "Phase 7 — Prompt Engineering"
+    title: "Self-Consistency and Tree-of-Thought Prompting"
+  - day: 56
+    phase: "Phase 7 — Prompt Engineering"
+    title: "ReAct Prompting: Reasoning + Acting"
+  - day: 57
+    phase: "Phase 7 — Prompt Engineering"
+    title: "System Prompts vs. User Prompts"
+  - day: 58
+    phase: "Phase 7 — Prompt Engineering"
+    title: "Prompt Injection and Prompt Security Basics"
+  - day: 59
+    phase: "Phase 7 — Prompt Engineering"
+    title: "Structured Output Prompting (JSON Mode, Function Calling)"
+  - day: 60
+    phase: "Phase 8 — Working With LLM APIs"
+    title: "Introduction to LLM APIs (OpenAI, Anthropic, and Others)"
+  - day: 61
+    phase: "Phase 8 — Working With LLM APIs"
+    title: "Understanding Tokens, Pricing, and Rate Limits"
+  - day: 62
+    phase: "Phase 8 — Working With LLM APIs"
+    title: "Temperature, Top-P, and Sampling Parameters Explained"
+  - day: 63
+    phase: "Phase 8 — Working With LLM APIs"
+    title: "Streaming Responses and Latency Considerations"
+  - day: 64
+    phase: "Phase 8 — Working With LLM APIs"
+    title: "Function Calling and Tool Use Fundamentals"
+  - day: 65
+    phase: "Phase 8 — Working With LLM APIs"
+    title: "Structured Outputs and JSON Schema Enforcement"
+  - day: 66
+    phase: "Phase 9 — Embeddings & Retrieval / RAG Foundations"
+    title: "Embeddings for Retrieval: Revisiting the Concept for LLMs"
+  - day: 67
+    phase: "Phase 9 — Embeddings & Retrieval / RAG Foundations"
+    title: "Vector Databases Explained (Pinecone, Weaviate, Chroma, pgvector)"
+  - day: 68
+    phase: "Phase 9 — Embeddings & Retrieval / RAG Foundations"
+    title: "Chunking Strategies for Documents"
+  - day: 69
+    phase: "Phase 9 — Embeddings & Retrieval / RAG Foundations"
+    title: "Introduction to Retrieval-Augmented Generation (RAG)"
+  - day: 70
+    phase: "Phase 9 — Embeddings & Retrieval / RAG Foundations"
+    title: "Building a Basic RAG Pipeline From Scratch"
+  - day: 71
+    phase: "Phase 9 — Embeddings & Retrieval / RAG Foundations"
+    title: "LangChain Fundamentals: Chains, Prompts, and Memory"
+  - day: 72
+    phase: "Phase 9 — Embeddings & Retrieval / RAG Foundations"
+    title: "LlamaIndex Fundamentals: The Data Framework for LLM Apps"
+  - day: 73
+    phase: "Phase 9 — Embeddings & Retrieval / RAG Foundations"
+    title: "Advanced RAG: Re-Ranking and Hybrid Search"
+  - day: 74
+    phase: "Phase 9 — Embeddings & Retrieval / RAG Foundations"
+    title: "Evaluating RAG Systems"
+  - day: 75
+    phase: "Phase 10 — Fine-Tuning & Model Adaptation"
+    title: "When to Fine-Tune vs. Prompt Engineer vs. RAG"
+  - day: 76
+    phase: "Phase 10 — Fine-Tuning & Model Adaptation"
+    title: "Full Fine-Tuning vs. Parameter-Efficient Fine-Tuning"
+  - day: 77
+    phase: "Phase 10 — Fine-Tuning & Model Adaptation"
+    title: "LoRA and QLoRA Explained"
+  - day: 78
+    phase: "Phase 10 — Fine-Tuning & Model Adaptation"
+    title: "Fine-Tuning on Your Own Dataset: A Walkthrough"
+  - day: 79
+    phase: "Phase 10 — Fine-Tuning & Model Adaptation"
+    title: "Model Quantization Basics"
+  - day: 80
+    phase: "Phase 11 — Introduction to AI Agents"
+    title: "What Is an AI Agent? Defining Agentic Behavior"
+  - day: 81
+    phase: "Phase 11 — Introduction to AI Agents"
+    title: "Agents vs. Simple LLM Calls: The Key Differences"
+  - day: 82
+    phase: "Phase 11 — Introduction to AI Agents"
+    title: "The ReAct Pattern for Agents"
+  - day: 83
+    phase: "Phase 11 — Introduction to AI Agents"
+    title: "Tool Use in Agents: Giving LLMs Hands"
+  - day: 84
+    phase: "Phase 11 — Introduction to AI Agents"
+    title: "Model Context Protocol (MCP): A Standard for Tool and Data Connectivity"
+  - day: 85
+    phase: "Phase 11 — Introduction to AI Agents"
+    title: "Agent Memory: Short-Term vs. Long-Term"
+  - day: 86
+    phase: "Phase 11 — Introduction to AI Agents"
+    title: "Planning in Agents: Task Decomposition"
+  - day: 87
+    phase: "Phase 12 — Agentic Architectures"
+    title: "Single-Agent Architectures"
+  - day: 88
+    phase: "Phase 12 — Agentic Architectures"
+    title: "Multi-Agent Systems: Why and When"
+  - day: 89
+    phase: "Phase 12 — Agentic Architectures"
+    title: "Agent Orchestration Patterns"
+  - day: 90
+    phase: "Phase 12 — Agentic Architectures"
+    title: "Agent2Agent (A2A) Protocol: Standardizing Agent-to-Agent Communication"
+  - day: 91
+    phase: "Phase 12 — Agentic Architectures"
+    title: "LangGraph Fundamentals"
+  - day: 92
+    phase: "Phase 12 — Agentic Architectures"
+    title: "CrewAI Fundamentals"
+  - day: 93
+    phase: "Phase 12 — Agentic Architectures"
+    title: "AutoGen Fundamentals"
+  - day: 94
+    phase: "Phase 12 — Agentic Architectures"
+    title: "Building an Agent From Scratch (No Framework)"
+  - day: 95
+    phase: "Phase 13 — Agentic AI in Production"
+    title: "Evaluating Agent Performance"
+  - day: 96
+    phase: "Phase 13 — Agentic AI in Production"
+    title: "Agent Observability and Tracing"
+  - day: 97
+    phase: "Phase 13 — Agentic AI in Production"
+    title: "Handling Agent Failures and Retries"
+  - day: 98
+    phase: "Phase 13 — Agentic AI in Production"
+    title: "Cost Management for Agentic Systems"
+  - day: 99
+    phase: "Phase 13 — Agentic AI in Production"
+    title: "Security Considerations for Agents"
+  - day: 100
+    phase: "Phase 13 — Agentic AI in Production"
+    title: "Human-in-the-Loop Patterns for Agents"
+  - day: 101
+    phase: "Phase 13 — Agentic AI in Production"
+    title: "Deploying Agents to Production"
+  - day: 102
+    phase: "Phase 14 — Capstone & What's Next"
+    title: "Building a Complete Agentic Application, Part 1"
+  - day: 103
+    phase: "Phase 14 — Capstone & What's Next"
+    title: "Building a Complete Agentic Application, Part 2"
+  - day: 104
+    phase: "Phase 14 — Capstone & What's Next"
+    title: "The Future of Agentic AI: Trends to Watch"
+  - day: 105
+    phase: "Phase 14 — Capstone & What's Next"
+    title: "Wrapping Up: How to Keep Learning After This Series"

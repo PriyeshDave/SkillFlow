@@ -1,0 +1,21 @@
+model: "gpt-4.1"
+max_tokens_per_call: 4000
+
+# Quality gate thresholds used by the critique pass
+min_word_count: 800
+max_word_count: 1800
+require_code_block: false   # not every day has code (e.g. conceptual/history days)
+require_recap_section: true
+require_next_preview_section: true
+
+state_file: "content/.series_state.json"
+drafts_dir: "content/drafts"
+published_dir: "content/published"
+
+publishing:
+  devto:
+    publish_status: "public"   # draft | public | unlisted
+    tags: ["ai", "nlp", "genai", "100daysofcode"]
+    series_name: "Zero to Agentic"
+  linkedin:
+    visibility: "PUBLIC"

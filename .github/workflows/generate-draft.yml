@@ -1,0 +1,77 @@
+name: Generate Lesson Draft
+
+on:
+  schedule:
+    # Weekdays only, 9 AM UTC. Unlike BlogMind's 2-day cadence, cron's
+    # day-of-week field natively supports "weekdays only" (1-5 = Mon-Fri),
+    # so no self-throttling/state-check hack is needed here.
+    - cron: "0 9 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate lesson
+        id: generate
+        run: |
+          set -o pipefail
+          OUTPUT=$(python -m src.generation.pipeline)
+          echo "$OUTPUT"
+          DRAFT_PATH=$(echo "$OUTPUT" | tail -n 1)
+          echo "draft_path=$DRAFT_PATH" >> "$GITHUB_OUTPUT"
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Check whether a draft was actually produced
+        id: check_draft
+        run: |
+          # pipeline.py prints only a status message (no file path) once
+          # the roadmap is exhausted -- guard against treating that as a
+          # real path.
+          if [ -f "${{ steps.generate.outputs.draft_path }}" ]; then
+            echo "has_draft=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_draft=false" >> "$GITHUB_OUTPUT"
+            echo "No draft file produced (roadmap likely complete). Skipping."
+          fi
+
+      - name: Commit day-index state to main
+        if: steps.check_draft.outputs.has_draft == 'true'
+        run: |
+          git config user.name "roadmap-automation-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add content/.series_state.json
+          git diff --staged --quiet || git commit -m "Advance to next day in roadmap"
+          git push origin main
+
+      - name: Commit draft to a new branch
+        if: steps.check_draft.outputs.has_draft == 'true'
+        run: |
+          BRANCH="lesson/$(date +%Y%m%d-%H%M%S)"
+          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
+          git checkout -b "$BRANCH"
+          git add content/drafts/
+          git commit -m "Lesson draft for review"
+          git push origin "$BRANCH"
+
+      - name: Open review PR
+        if: steps.check_draft.outputs.has_draft == 'true'
+        run: python -m src.review.create_pr "${{ steps.generate.outputs.draft_path }}" "$BRANCH"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}

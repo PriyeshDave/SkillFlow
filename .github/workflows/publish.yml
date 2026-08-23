@@ -1,0 +1,53 @@
+name: Publish Approved Lesson
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'lesson-draft')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Find the merged draft file
+        id: find_draft
+        run: |
+          FILE=$(ls -t content/drafts/*.md 2>/dev/null | head -n 1)
+          if [ -z "$FILE" ]; then
+            echo "No .md file found in content/drafts/ -- nothing to publish."
+          else
+            echo "Found draft: $FILE"
+          fi
+          echo "file=$FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to dev.to and LinkedIn
+        if: steps.find_draft.outputs.file != ''
+        run: python -m src.publishing.publish_all "${{ steps.find_draft.outputs.file }}"
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_PERSON_URN: ${{ secrets.LINKEDIN_PERSON_URN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Commit moved file (drafts -> published)
+        run: |
+          git config user.name "roadmap-automation-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add content/
+          git commit -m "Publish: move approved lesson to content/published/" || echo "Nothing to commit"
+          git push origin main

@@ -1,0 +1,6 @@
+openai>=1.50.0
+requests>=2.31.0
+pyyaml>=6.0.1
+python-dotenv>=1.0.1
+python-frontmatter>=1.1.0
+tenacity>=8.2.3
