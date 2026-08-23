@@ -40,7 +40,9 @@ def create_pr(draft_file: str, branch_name: str) -> None:
         post = frontmatter.load(f)
 
     body = build_pr_body(post)
-    title = f"Day {post.get('day')}: {post.get('title', draft_file)}"
+    # post['title'] is already "Day N: <topic>" (set by pipeline.py) --
+    # don't prepend "Day N:" again here, or it duplicates.
+    title = post.get("title", draft_file)
 
     subprocess.run(
         [
