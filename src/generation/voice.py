@@ -27,6 +27,6 @@ Voice and style rules for this series:
   openers, no "in today's fast-paced world." Get to the teaching directly.
 - Confident but not arrogant: it's fine to say "this part is genuinely
   confusing at first" or "don't worry if this doesn't click immediately."
-- Target length: 800-1800 words for the main content (excluding the
+- Target length: 800-2400 words for the main content (excluding the
   recap/takeaways/exercise/preview sections, which are handled separately).
 """

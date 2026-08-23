@@ -3,7 +3,7 @@ max_tokens_per_call: 4000
 
 # Quality gate thresholds used by the critique pass
 min_word_count: 800
-max_word_count: 1800
+max_word_count: 2400
 require_code_block: false   # not every day has code (e.g. conceptual/history days)
 require_recap_section: true
 require_next_preview_section: true
