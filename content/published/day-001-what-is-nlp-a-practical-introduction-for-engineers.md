@@ -6,7 +6,7 @@ recap_summary: Introduced Natural Language Processing (NLP), distinguishing it f
   AI and machine learning, and explored core concepts, tasks, and its real-world importance.
   Covered how computers process human language through tokenization and outlined common
   NLP applications such as classification, sentiment analysis, and translation.
-status: pending_review
+status: published
 title: 'Day 1: What Is NLP? A Practical Introduction for Engineers'
 topic_title: What Is NLP? A Practical Introduction for Engineers
 ---
