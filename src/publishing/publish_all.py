@@ -48,11 +48,9 @@ def publish_all(draft_path: str, dry_run: bool = False) -> None:
         print(f"[publish_all] DRY RUN — would publish {published_path} to dev.to + LinkedIn.")
         return
 
-    # 1. dev.to
     devto_result = publish_to_devto(str(published_path))
     devto_url = devto_result.get("url", "")
 
-    # 2. LinkedIn
     settings = get_settings()
     day_number = post.get("day")
     total_days = len(get_roadmap())
@@ -69,6 +67,12 @@ def publish_all(draft_path: str, dry_run: bool = False) -> None:
         previous_summary=previous_summary,
         series_name=series_name,
     )
+
+    print(f"[publish_all] LinkedIn text length: {len(linkedin_text)} chars")
+    print("[publish_all] ----- LinkedIn text being sent -----")
+    print(linkedin_text)
+    print("[publish_all] ----- end LinkedIn text -----")
+
     publish_to_linkedin(
         linkedin_text,
         devto_url,

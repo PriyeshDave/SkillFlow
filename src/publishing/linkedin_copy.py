@@ -67,9 +67,6 @@ def _phase_hashtag(phase: str) -> str | None:
     words = [w for w in re.split(r"[^A-Za-z0-9]+", name_part) if w and w.lower() not in skip_words]
     if not words:
         return None
-    # Preserve words that are already all-caps (acronyms like NLP, AI, LLM,
-    # RAG) instead of capitalize()'ing them, which would lowercase the rest
-    # of the word ("NLP" -> "Nlp").
     parts = [w if w.isupper() else w.capitalize() for w in words]
     return "#" + "".join(parts)
 
@@ -82,7 +79,7 @@ def generate_linkedin_copy(
     phase: str,
     today_summary: str,
     previous_summary: str | None,
-    series_name: str = "Zero to Agentic",
+    series_name: str = "Zero to Agentic In 105 Days",
     product_name: str = "SkillFlow",
 ) -> str:
     day_width = len(str(total_days))
