@@ -5,7 +5,7 @@ phase: Phase 1 — NLP Foundations
 recap_summary: Explained what Natural Language Processing (NLP) is, its relationship
   to linguistics, AI, and speech recognition, highlighted real-world uses of NLP,
   introduced key NLP tasks, and demonstrated basic text tokenization in Python.
-status: pending_review
+status: published
 title: 'Day 1: What Is NLP? A Practical Introduction for Engineers'
 topic_title: What Is NLP? A Practical Introduction for Engineers
 ---
