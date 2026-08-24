@@ -6,7 +6,7 @@ recap_summary: Introduced Natural Language Processing (NLP), explaining what nat
   language is, why NLP is challenging, and real-world applications of NLP in technology
   and daily life. Provided an overview of the upcoming lesson series and demonstrated
   a simple NLP task in Python.
-status: pending_review
+status: published
 title: 'Day 1: What Is NLP? A Practical Introduction for Engineers'
 topic_title: What Is NLP? A Practical Introduction for Engineers
 ---
