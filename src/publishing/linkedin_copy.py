@@ -7,42 +7,20 @@ pipeline: today's recap_summary and the previous day's recap_summary both
 already exist, and the Key Takeaways bullets are already sitting in the
 lesson's own Markdown body.
 
-CRITICAL -- LinkedIn's 'little' text escaping: the "commentary" field on
-LinkedIn's Posts API is not plain text. It's a small markup language
-called 'little', and a specific set of characters are reserved for its
-syntax (mentions, hashtags, templates): _ | ( ) [ ] { } @ # * ~ < > \\
-If any of these appear unescaped, LinkedIn's parser can silently stop
-rendering content from that exact point onward -- this was confirmed as
-the actual cause of posts truncating mid-sentence right before a literal
-"(" character, with the API call still succeeding (a valid post URN
-returned) despite the visible content being cut. Every reserved character
-in generated text MUST be backslash-escaped before being sent. Hashtags
-specifically should use LinkedIn's HashtagTemplate syntax
-({hashtag|#|TagName}) rather than raw "#TagName" text, since "#" is
-itself one of the reserved characters.
+Note on formatting -- LinkedIn's commentary field is plain text: an
+earlier version of this file backslash-escaped punctuation and used a
+"{hashtag|#|Tag}" template syntax, based on a developer forum report about
+LinkedIn's internal 'little' text format. That turned out to be wrong for
+this API: both the escape backslashes and the template braces showed up
+as literal, broken text on the live post instead of being interpreted.
+LinkedIn's own feed renderer auto-detects and hyperlinks plain "#word"
+hashtags with no special syntax required -- the same as typing a hashtag
+directly into LinkedIn's own compose box. This version sends plain text
+with plain hashtags and no escaping.
 """
 from __future__ import annotations
 
 import re
-
-# Reserved characters for LinkedIn's 'little' text format. Must be
-# backslash-escaped anywhere they appear as literal text in "commentary".
-_LITTLE_RESERVED_CHARS = ["\\", "_", "|", "(", ")", "[", "]", "{", "}", "@", "#", "*", "~", "<", ">"]
-
-
-def _escape_little_text(text: str) -> str:
-    """Backslash-escape every LinkedIn 'little'-format reserved character."""
-    return "".join(f"\\{ch}" if ch in _LITTLE_RESERVED_CHARS else ch for ch in text)
-
-
-def _hashtag_template(tag: str) -> str:
-    """
-    Renders a hashtag using LinkedIn's HashtagTemplate syntax
-    ({hashtag|#|TagName}) instead of raw "#TagName" text -- required
-    because "#" is a reserved 'little'-format character. `tag` should be
-    passed WITHOUT the leading "#".
-    """
-    return f"{{hashtag|#|{tag}}}"
 
 
 def _to_bold_unicode(text: str) -> str:
@@ -84,7 +62,7 @@ def _extract_key_takeaways(post_markdown: str) -> list[str]:
 
 
 def _phase_hashtag(phase: str) -> str | None:
-    """'Phase 1 — NLP Foundations' -> 'NLPFoundations' (no leading #; preserves acronyms)"""
+    """'Phase 1 — NLP Foundations' -> '#NLPFoundations' (preserves acronyms)"""
     if "—" not in phase:
         return None
     name_part = phase.split("—", 1)[1].strip()
@@ -93,7 +71,7 @@ def _phase_hashtag(phase: str) -> str | None:
     if not words:
         return None
     parts = [w if w.isupper() else w.capitalize() for w in words]
-    return "".join(parts)
+    return "#" + "".join(parts)
 
 
 def generate_linkedin_copy(
@@ -110,38 +88,34 @@ def generate_linkedin_copy(
 ) -> str:
     day_width = len(str(total_days))
     day_str = str(day_number).zfill(day_width)
-    header = _to_bold_unicode(
-        _escape_little_text(f"Day {day_str}/{total_days}: {topic_title}")
-    )
+    header = _to_bold_unicode(f"Day {day_str}/{total_days}: {topic_title}")
 
     lines = [header, ""]
 
     if previous_summary:
-        lines.append(f"📌 Yesterday's Recap: {_escape_little_text(previous_summary)}")
+        lines.append(f"📌 Yesterday's Recap: {previous_summary}")
         lines.append("")
 
-    lines.append(f"📖 Today's Lesson: {_escape_little_text(today_summary)}")
+    lines.append(f"📖 Today's Lesson: {today_summary}")
     lines.append("")
 
     takeaways = _extract_key_takeaways(post_markdown)
     if takeaways:
         lines.append("💡 Key Takeaways:")
-        lines.extend(f"- {_escape_little_text(t)}" for t in takeaways)
+        lines.extend(f"- {t}" for t in takeaways)
         lines.append("")
 
-    hashtag_names = ["AIEngineering", "100DaysOfCode"]
+    hashtags = ["#AIEngineering", "#100DaysOfCode"]
     phase_tag = _phase_hashtag(phase)
     if phase_tag:
-        hashtag_names.append(phase_tag)
-    lines.append(" ".join(_hashtag_template(t) for t in hashtag_names))
+        hashtags.append(phase_tag)
+    lines.append(" ".join(hashtags))
     lines.append("")
 
     lines.append(
-        _escape_little_text(
-            f'✨ Curated by {product_name} — your AI-powered tutor automation '
-            f'behind "{series_name}," turning a 105-day AI curriculum into one '
-            f"lesson a day."
-        )
+        f'✨ Curated by {product_name} — your AI-powered tutor automation '
+        f'behind "{series_name}," turning a 105-day AI curriculum into one '
+        f"lesson a day."
     )
     lines.append("")
     lines.append("Happy Learning! 🎉")
@@ -150,11 +124,9 @@ def generate_linkedin_copy(
     lines.append("")
 
     # URL placed as the absolute LAST line, deliberately. No content.article
-    # card is attached anymore (see linkedin_publish.py docstring for why),
-    # so this is the only way readers reach the article. Since we can't yet
-    # rule out that a bare URL also truncates trailing text on a plain-text
-    # post (only confirmed it does when paired with a duplicate content.article
-    # card), keeping it last means nothing is lost even in the worst case.
+    # card is attached (see linkedin_publish.py), so this is the only way
+    # readers reach the article. Keeping it last means nothing is lost even
+    # if any future platform quirk affects text after a URL.
     lines.append(f"🔗 Read the full lesson: {devto_url}")
 
     return "\n".join(lines)

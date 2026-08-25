@@ -20,6 +20,7 @@ from src.generation.continuity import generate_continuity
 from src.generation.critique import critique_draft, revise_draft
 from src.generation.outline import generate_outline
 from src.generation.draft import generate_draft
+from src.generation.resources import generate_resources
 from src.generation.style_pass import style_pass
 from src.utils.storage import (
     draft_path,
@@ -38,6 +39,7 @@ def assemble_final_post(
     previous_summary: str | None,
     body_markdown: str,
     continuity: dict,
+    resources: list[dict],
 ) -> str:
     """
     Deterministically builds the final lesson structure. Day numbering,
@@ -58,6 +60,14 @@ def assemble_final_post(
     parts.append(f"---\n\n## Key Takeaways\n\n{takeaways_block}")
 
     parts.append(f"## Try It Yourself\n\n{continuity['exercise_text']}")
+
+    if resources:
+        icon_by_type = {"video": "\U0001F3A5", "docs": "\U0001F4D8", "article": "\U0001F4C4", "paper": "\U0001F4C4"}
+        resource_lines = "\n".join(
+            f"- {icon_by_type.get(r.get('type', ''), '\U0001F517')} [{r['title']}]({r['url']})"
+            for r in resources
+        )
+        parts.append(f"## Further Resources\n\n{resource_lines}")
 
     if next_entry:
         parts.append(
@@ -115,8 +125,12 @@ def run_pipeline() -> str | None:
     print("[pipeline] Generating recap/takeaways/exercise/preview content...")
     continuity = generate_continuity(final_body, outline["planned_exercise"])
 
+    print("[pipeline] Finding and verifying further-reading resources...")
+    resources = generate_resources(today_entry)
+    print(f"[pipeline] {len(resources)} verified resource(s) will be included.")
+
     full_content = assemble_final_post(
-        today_entry, next_entry, previous_summary, final_body, continuity
+        today_entry, next_entry, previous_summary, final_body, continuity, resources
     )
 
     post = frontmatter.Post(full_content)
