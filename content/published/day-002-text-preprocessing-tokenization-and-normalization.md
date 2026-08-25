@@ -5,7 +5,7 @@ phase: Phase 1 — NLP Foundations
 recap_summary: Explained the importance of text preprocessing in NLP, focusing on
   tokenization and normalization techniques to make raw text manageable for machine
   learning models.
-status: pending_review
+status: published
 title: 'Day 2: Text Preprocessing: Tokenization and Normalization'
 topic_title: 'Text Preprocessing: Tokenization and Normalization'
 ---
