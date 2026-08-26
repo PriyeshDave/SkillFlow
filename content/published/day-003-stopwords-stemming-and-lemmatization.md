@@ -5,7 +5,7 @@ phase: Phase 1 — NLP Foundations
 recap_summary: Explained stopword removal, stemming, and lemmatization in NLP, including
   how they simplify and normalize text for analysis using practical examples and Python
   code.
-status: pending_review
+status: published
 title: 'Day 3: Stopwords, Stemming, and Lemmatization'
 topic_title: Stopwords, Stemming, and Lemmatization
 ---
