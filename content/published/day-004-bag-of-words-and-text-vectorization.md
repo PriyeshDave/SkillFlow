@@ -5,7 +5,7 @@ phase: Phase 1 — NLP Foundations
 recap_summary: Explained text vectorization in Natural Language Processing, focusing
   on the Bag-of-Words model for converting text into numerical vectors by counting
   word occurrences.
-status: pending_review
+status: published
 title: 'Day 4: Bag-of-Words and Text Vectorization'
 topic_title: Bag-of-Words and Text Vectorization
 ---
