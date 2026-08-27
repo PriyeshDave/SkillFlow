@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Preprocessing — Tokenization &amp; Normalization</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root{
+    --bg:#0d1117; --bg-raised:#10161f; --panel:#151b24; --border:#262d38;
+    --text:#e6edf3; --text-dim:#8b949e; --text-faint:#4d5666;
+    --red:#f85149; --red-bg:rgba(248,81,73,0.12);
+    --amber:#e3a008;
+    --green:#3fb950; --green-bg:rgba(63,185,80,0.12);
+    --blue:#58a6ff; --blue-bg:rgba(88,166,255,0.12);
+    --purple:#a78bfa; --purple-bg:rgba(167,139,250,0.12);
+    --mono:'IBM Plex Mono', ui-monospace, monospace; --sans:'Inter', system-ui, sans-serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{ background:var(--bg); color:var(--text); font-family:var(--sans); line-height:1.6; overflow-x:hidden; }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; } }
+  ::selection{ background:var(--blue-bg); color:var(--text); }
+  a{ color:inherit; }
+  .wrap{ max-width:860px; margin:0 auto; padding:0 24px; }
+
+  .progress{ position:fixed; top:0; left:0; height:3px; width:0%; background:linear-gradient(90deg, var(--blue), var(--green), var(--purple)); z-index:100; transition:width 0.1s linear; }
+  .grid-bg{
+    position:fixed; inset:-60px; z-index:-1;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size:48px 48px; opacity:0.25;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+    transition: transform 0.2s ease-out; will-change: transform;
+  }
+  .glow{ position:fixed; width:520px; height:520px; border-radius:50%; background: radial-gradient(circle, rgba(88,166,255,0.10), transparent 70%); z-index:-1; pointer-events:none; filter:blur(10px); transition: transform 0.25s ease-out; will-change: transform; top:-260px; left:-260px; }
+
+  .topbar{ position:sticky; top:0; z-index:50; background:rgba(13,17,23,0.85); backdrop-filter: blur(10px); border-bottom:1px solid var(--border); }
+  .topbar-inner{ max-width:860px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; font-family:var(--mono); font-size:13px; color:var(--text-dim); }
+  .topbar-dots{ display:flex; gap:6px; }
+  .dot{ width:10px; height:10px; border-radius:50%; background:#3a3f4b; }
+  .topbar-path{ opacity:0.8; }
+  .topbar-path .sep{ color:var(--text-faint); margin:0 4px; }
+  .topbar-path .live{ color:var(--blue); }
+
+  .hero{ padding:96px 0 64px; }
+  .eyebrow{ font-family:var(--mono); font-size:13px; color:var(--blue); letter-spacing:0.06em; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+  .eyebrow::before{ content:'●'; color:var(--green); font-size:9px; animation: blink 2s ease-in-out infinite; }
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  h1{ font-family:var(--sans); font-weight:800; font-size:clamp(32px, 5.2vw, 50px); line-height:1.1; letter-spacing:-0.02em; margin-bottom:20px; }
+  h1 .word-anim{ display:inline-block; opacity:0; transform:translateY(16px) rotate(-2deg); animation: wordIn 0.6s cubic-bezier(.2,.8,.2,1) forwards; }
+  @keyframes wordIn{ to{ opacity:1; transform:translateY(0) rotate(0deg); } }
+  .lede{ font-size:18px; color:var(--text-dim); max-width:580px; margin-bottom:36px; }
+  .lede strong{ color:var(--text); font-weight:600; }
+  .hero-hint{ font-family:var(--mono); font-size:12.5px; color:var(--text-faint); margin-top:14px; display:flex; align-items:center; gap:8px; }
+  .hero-hint .pulse{ width:6px; height:6px; border-radius:50%; background:var(--blue); animation: pulseDot 1.6s ease-in-out infinite; }
+  @keyframes pulseDot{ 0%,100%{ transform:scale(1); opacity:1;} 50%{ transform:scale(1.6); opacity:0.4;} }
+
+  .terminal{ background:var(--panel); border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow: 0 20px 60px -20px rgba(0,0,0,0.6); transition: box-shadow 0.3s ease, border-color 0.3s ease; }
+  .terminal:hover{ border-color:#3a4250; }
+  .terminal-head{ display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid var(--border); background:var(--bg-raised); }
+  .terminal-head .d{ width:11px; height:11px; border-radius:50%; }
+  .terminal-head .r{ background:#f85149; opacity:.7; } .terminal-head .y{ background:#e3a008; opacity:.7; } .terminal-head .g{ background:#3fb950; opacity:.7; }
+  .terminal-head .label{ font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-left:8px; }
+  .terminal-body{ padding:28px 24px 32px; font-family:var(--mono); }
+  .terminal-line{ font-size:14px; color:var(--text-faint); margin-bottom:14px; }
+  .terminal-line .prompt{ color:var(--green); }
+  .token-array{ font-size:clamp(15px, 2.2vw, 19px); line-height:2; }
+  .bracket{ color:var(--text-faint); }
+  .tok{
+    display:inline-block; padding:3px 8px; margin:2px 2px; border-radius:5px;
+    background:var(--blue-bg); color:var(--blue); border:1px solid rgba(88,166,255,0.3);
+    cursor:pointer; user-select:none; transition: all 0.2s ease;
+    opacity:0; transform:translateY(6px) scale(0.9);
+  }
+  .tok:hover{ transform:translateY(-2px); }
+  .tok.lowered{ background:var(--green-bg); color:var(--green); border-color:rgba(63,185,80,0.3); }
+  .count-readout{ margin-top:18px; font-size:13px; color:var(--text-faint); font-family:var(--mono); }
+  .count-readout .num{ color:var(--text); font-weight:600; }
+
+  section.stage{ padding:100px 0; border-top:1px solid var(--border); }
+  .stage-index{ font-family:var(--mono); font-size:13px; color:var(--text-faint); margin-bottom:16px; letter-spacing:0.04em; }
+  .stage-index .n{ font-weight:600; }
+  .stage.tok-stage .stage-index .n{ color:var(--blue); }
+  .stage.norm-stage .stage-index .n{ color:var(--green); }
+  .stage.pitfalls .stage-index .n{ color:var(--red); }
+  .stage.playground .stage-index .n{ color:var(--purple); }
+
+  h2{ font-size:clamp(26px, 4vw, 36px); font-weight:800; letter-spacing:-0.015em; margin-bottom:18px; }
+  .stage-copy{ font-size:16.5px; color:var(--text-dim); max-width:600px; margin-bottom:36px; }
+  .stage-copy strong{ color:var(--text); font-weight:600; }
+
+  /* ---------- tokenization method cards ---------- */
+  .method-tabs{ display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+  .method-tab{
+    font-family:var(--mono); font-size:13px; padding:8px 16px; border-radius:20px;
+    border:1px solid var(--border); background:var(--panel); color:var(--text-dim);
+    cursor:pointer; transition: all 0.2s ease;
+  }
+  .method-tab:hover{ border-color:var(--blue); color:var(--text); }
+  .method-tab.active{ background:var(--blue-bg); border-color:var(--blue); color:var(--blue); }
+  .method-demo{ background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:32px; min-height:140px; }
+  .method-input{ font-family:var(--mono); font-size:15px; color:var(--text-dim); margin-bottom:20px; }
+  .method-output{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .method-chip{
+    font-family:var(--mono); font-size:15px; padding:5px 10px; border-radius:6px;
+    background:var(--blue-bg); color:var(--blue); border:1px solid rgba(88,166,255,0.3);
+    opacity:0; transform:scale(0.85); animation: chipPop 0.35s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  @keyframes chipPop{ to{ opacity:1; transform:scale(1); } }
+  .method-note{ font-family:var(--sans); font-size:12.5px; color:var(--text-faint); margin-top:18px; }
+
+  /* ---------- normalization convergence ---------- */
+  .converge-wrap{ background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:36px; }
+  .converge-row{ display:flex; align-items:center; gap:20px; font-family:var(--mono); font-size:19px; padding:14px 0; }
+  .converge-row + .converge-row{ border-top:1px solid var(--border); }
+  .converge-src{ min-width:130px; color:var(--text-dim); position:relative; cursor:pointer; }
+  .converge-src .ch{ transition: opacity 0.4s ease, color 0.4s ease; }
+  .converge-src .ch.strip{ opacity:0.25; text-decoration:line-through; color:var(--red); }
+  .converge-src .ch.lower{ color:var(--green); }
+  .converge-arrow{ color:var(--text-faint); }
+  .converge-dst{ color:var(--green); font-weight:600; }
+  .converge-hint{ font-family:var(--sans); font-size:12px; color:var(--text-faint); margin-top:20px; }
+
+  /* ---------- pitfalls ---------- */
+  .pitfall-grid{ display:grid; gap:14px; }
+  .pitfall-card{ background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:24px 26px; display:flex; gap:16px; align-items:flex-start; transition:border-color 0.2s ease; }
+  .pitfall-card:hover{ border-color:rgba(248,81,73,0.4); }
+  .pitfall-icon{ font-family:var(--mono); color:var(--red); font-size:18px; flex-shrink:0; margin-top:1px; }
+  .pitfall-title{ font-weight:600; font-size:15px; margin-bottom:6px; }
+  .pitfall-body{ font-size:14.5px; color:var(--text-dim); }
+
+  .comma-toggle{ background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:28px; margin-top:6px; }
+  .comma-display{ font-family:var(--mono); font-size:19px; margin-bottom:16px; min-height:1.5em; }
+  .comma-display .removed{ color:var(--red); opacity:0.4; text-decoration:line-through; }
+  .comma-toggle-btn{
+    font-family:var(--mono); font-size:12.5px; padding:8px 16px; border-radius:20px;
+    border:1px solid var(--border); background:var(--bg-raised); color:var(--text-dim);
+    cursor:pointer; transition:all 0.2s ease;
+  }
+  .comma-toggle-btn:hover{ border-color:var(--red); color:var(--red); }
+  .comma-meaning{ font-family:var(--sans); font-size:13px; color:var(--text-faint); margin-top:14px; transition:opacity 0.2s ease; }
+
+  /* ---------- code block ---------- */
+  .code-block{ background:var(--panel); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .code-block pre{ padding:24px; overflow-x:auto; font-family:var(--mono); font-size:13.5px; line-height:1.7; color:var(--text-dim); }
+  .code-block .kw{ color:#ff7b72; } .code-block .fn{ color:#d2a8ff; } .code-block .str{ color:var(--green); } .code-block .cm{ color:var(--text-faint); font-style:italic; }
+
+  /* ---------- playground ---------- */
+  .playground{ background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:26px; }
+  .pg-input-row{ margin-bottom:20px; }
+  .pg-input{ width:100%; background:var(--bg-raised); border:1px solid var(--border); border-radius:8px; padding:12px 14px; color:var(--text); font-family:var(--mono); font-size:14px; outline:none; transition:border-color 0.2s ease; }
+  .pg-input:focus{ border-color:var(--purple); }
+  .pg-controls{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+  .pg-toggle{
+    font-family:var(--mono); font-size:12.5px; padding:7px 14px; border-radius:20px;
+    border:1px solid var(--border); background:var(--bg-raised); color:var(--text-faint);
+    cursor:pointer; transition:all 0.2s ease; user-select:none;
+  }
+  .pg-toggle.on{ background:var(--purple-bg); border-color:var(--purple); color:var(--purple); }
+  .pg-out-wrap{ margin-top:22px; padding-top:20px; border-top:1px solid var(--border); }
+  .pg-out-label{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-faint); margin-bottom:12px; }
+  .pg-out{ font-family:var(--mono); font-size:15px; line-height:2; display:flex; flex-wrap:wrap; gap:6px; }
+  .pg-chip{ display:inline-block; padding:3px 8px; border-radius:5px; background:var(--purple-bg); color:var(--purple); border:1px solid rgba(167,139,250,0.3); opacity:0; transform:translateY(6px) scale(0.9); animation: chipIn 0.35s cubic-bezier(.2,.8,.2,1) forwards; }
+  @keyframes chipIn{ to{ opacity:1; transform:translateY(0) scale(1); } }
+  .pg-note{ font-family:var(--sans); font-size:12px; color:var(--text-faint); margin-top:16px; }
+
+  .commit-log{ font-family:var(--mono); font-size:14.5px; }
+  .commit{ display:flex; gap:14px; padding:16px 0; border-top:1px solid var(--border); transition:padding-left 0.2s ease; }
+  .commit:first-child{ border-top:none; }
+  .commit:hover{ padding-left:6px; }
+  .commit-hash{ color:var(--text-faint); flex-shrink:0; }
+  .commit-msg{ color:var(--text); }
+  .commit-msg .tag{ color:var(--blue); }
+
+  .outro{ padding:100px 0 120px; border-top:1px solid var(--border); text-align:center; }
+  .outro-mark{ font-family:var(--mono); font-size:13px; color:var(--text-faint); margin-bottom:16px; }
+  .outro h2{ margin-bottom:14px; }
+  .outro p{ color:var(--text-dim); max-width:480px; margin:0 auto 32px; }
+  .outro-next{ display:inline-flex; align-items:center; gap:10px; font-family:var(--mono); font-size:14px; padding:12px 20px; border:1px solid var(--border); border-radius:8px; color:var(--text-dim); background:var(--panel); transition: transform 0.2s ease, border-color 0.2s ease; }
+  .outro-next:hover{ transform:translateY(-2px); border-color:var(--green); }
+  .outro-next .arrow{ color:var(--green); display:inline-block; transition:transform 0.2s ease; }
+  .outro-next:hover .arrow{ transform:translateX(4px); }
+
+  footer{ padding:32px 0 48px; text-align:center; font-family:var(--mono); font-size:12px; color:var(--text-faint); }
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="glow" id="glow"></div>
+<div class="grid-bg" id="gridbg"></div>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+    <div class="topbar-path">zero-to-agentic<span class="sep">/</span>day-2<span class="sep">/</span><span class="live" id="scroll-pct">0%</span></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">DAY 2 · TEXT PREPROCESSING</div>
+    <h1 id="hero-title"></h1>
+    <p class="lede">Raw human language is messy. Before any model can use it, text gets <strong>split into pieces</strong> and <strong>made predictable</strong> — click a token below to fold its case.</p>
+
+    <div class="terminal">
+      <div class="terminal-head"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="label">python3 — preprocess.py</span></div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="prompt">&gt;&gt;&gt;</span> tokens = word_tokenize("The quick brown fox jumps over the lazy dog")</div>
+        <div class="token-array"><span class="bracket">[</span><span id="hero-tokens"></span><span class="bracket">]</span></div>
+        <div class="count-readout" id="hero-count"></div>
+      </div>
+    </div>
+    <div class="hero-hint"><span class="pulse"></span> click any token to toggle lowercase — that's normalization in miniature</div>
+  </section>
+
+  <!-- STAGE 1: TOKENIZATION -->
+  <section class="stage tok-stage reveal">
+    <div class="stage-index"><span class="n">01</span> · SPLITTING</div>
+    <h2>Tokenization: splitting text into units</h2>
+    <p class="stage-copy">A computer sees <strong>one long string</strong>. Tokenization breaks it into pieces a model can actually learn patterns from. There are three common granularities — try each one below.</p>
+
+    <div class="method-tabs">
+      <button class="method-tab active" data-method="char">Character</button>
+      <button class="method-tab" data-method="word">Word</button>
+      <button class="method-tab" data-method="sub">Subword</button>
+    </div>
+    <div class="method-demo">
+      <div class="method-input" id="method-input">"chat"</div>
+      <div class="method-output" id="method-output"></div>
+      <div class="method-note" id="method-note"></div>
+    </div>
+  </section>
+
+  <!-- STAGE 2: NORMALIZATION -->
+  <section class="stage norm-stage reveal">
+    <div class="stage-index"><span class="n">02</span> · CONVERGENCE</div>
+    <h2>Normalization makes text predictable</h2>
+    <p class="stage-copy">A person knows <strong>"Dog," "dog!,"</strong> and <strong>"DOGS"</strong> are related. A computer doesn't — until normalization lowercases, strips punctuation, and trims whitespace so different spellings collapse to one form.</p>
+
+    <div class="converge-wrap">
+      <div class="converge-row">
+        <span class="converge-src" data-target="dog">D<span class="ch">o</span><span class="ch">g</span></span>
+        <span class="converge-arrow">→</span>
+        <span class="converge-dst">dog</span>
+      </div>
+      <div class="converge-row">
+        <span class="converge-src" data-target="dog">dog<span class="ch strip">!</span></span>
+        <span class="converge-arrow">→</span>
+        <span class="converge-dst">dog</span>
+      </div>
+      <div class="converge-row">
+        <span class="converge-src" data-target="dog">D<span class="ch">O</span><span class="ch">G</span><span class="ch">S</span></span>
+        <span class="converge-arrow">→</span>
+        <span class="converge-dst">dog·s</span>
+      </div>
+    </div>
+    <div class="converge-hint">three different spellings, one normalized form — this is why matching gets easier after preprocessing</div>
+  </section>
+
+  <!-- CODE -->
+  <section class="stage reveal">
+    <div class="stage-index">IN PRACTICE</div>
+    <h2>Both steps, standard library only</h2>
+    <div class="code-block">
+<pre><span class="kw">import</span> string
+
+text = <span class="str">"The quick brown fox, jumps over the lazy dog!"</span>
+
+<span class="cm"># 1. lowercase</span>
+text = text.<span class="fn">lower</span>()
+
+<span class="cm"># 2. remove punctuation</span>
+text = text.<span class="fn">translate</span>(str.<span class="fn">maketrans</span>(<span class="str">''</span>, <span class="str">''</span>, string.punctuation))
+
+<span class="cm"># 3. split into tokens</span>
+tokens = text.<span class="fn">split</span>()
+
+<span class="cm"># ['the', 'quick', 'brown', 'fox', 'jumps', 'over', 'the', 'lazy', 'dog']</span></pre>
+    </div>
+  </section>
+
+  <!-- PITFALLS -->
+  <section class="stage pitfalls reveal">
+    <div class="stage-index"><span class="n">⚠</span> · TRADEOFFS</div>
+    <h2>Preprocessing isn't free</h2>
+    <p class="stage-copy">Every normalization choice can erase information you actually needed. Toggle the example below.</p>
+
+    <div class="pitfall-grid">
+      <div class="pitfall-card">
+        <div class="pitfall-icon">✗</div>
+        <div><div class="pitfall-title">Languages without spaces</div><div class="pitfall-body">Chinese, Japanese, and Thai don't separate words with spaces — splitting on whitespace just doesn't work.</div></div>
+      </div>
+      <div class="pitfall-card">
+        <div class="pitfall-icon">✗</div>
+        <div><div class="pitfall-title">Meaningful capitalization</div><div class="pitfall-body">German "Gift" (poison) and "gift" (English word) aren't the same — lowercasing everything can erase the distinction.</div></div>
+      </div>
+      <div class="pitfall-card">
+        <div class="pitfall-icon">✗</div>
+        <div><div class="pitfall-title">Emojis &amp; special characters</div><div class="pitfall-body">On social media, these often carry the sentiment. Deleting them can delete the actual signal.</div></div>
+      </div>
+    </div>
+
+    <div class="comma-toggle">
+      <div class="comma-display" id="comma-display"></div>
+      <button class="comma-toggle-btn" id="comma-btn">strip the comma →</button>
+      <div class="comma-meaning" id="comma-meaning">Punctuation removal is "safe" by default — until it changes who gets eaten.</div>
+    </div>
+  </section>
+
+  <!-- PLAYGROUND -->
+  <section class="stage playground reveal">
+    <div class="stage-index"><span class="n">▸</span> · TRY IT YOURSELF</div>
+    <h2>Run your own text through the pipeline</h2>
+    <p class="stage-copy">Type anything, pick a tokenization granularity, and toggle normalization steps on or off to see how each one changes the output.</p>
+
+    <div class="playground">
+      <div class="pg-input-row">
+        <input class="pg-input" id="pg-input" type="text" value="The Quick Brown Fox, Jumps Over  the LAZY dog!" maxlength="120" />
+      </div>
+      <div class="pg-controls" id="pg-method-controls">
+        <span class="pg-toggle" data-method="char">character</span>
+        <span class="pg-toggle on" data-method="word">word</span>
+        <span class="pg-toggle" data-method="sub">subword</span>
+      </div>
+      <div class="pg-controls" id="pg-norm-controls">
+        <span class="pg-toggle on" data-norm="lower">lowercase</span>
+        <span class="pg-toggle on" data-norm="punct">remove punctuation</span>
+        <span class="pg-toggle on" data-norm="space">strip whitespace</span>
+      </div>
+      <div class="pg-out-wrap">
+        <div class="pg-out-label">output</div>
+        <div class="pg-out" id="pg-out"></div>
+      </div>
+      <div class="pg-note">Runs entirely in your browser — simplified rules, mirrors the Python steps above.</div>
+    </div>
+  </section>
+
+  <!-- TAKEAWAYS -->
+  <section class="stage reveal">
+    <div class="stage-index">LOG</div>
+    <h2>Key takeaways</h2>
+    <div class="commit-log">
+      <div class="commit"><span class="commit-hash">2f1a4c9</span><span class="commit-msg"><span class="tag">tokenize:</span> split raw text into words, chars, or subwords</span></div>
+      <div class="commit"><span class="commit-hash">6de501b</span><span class="commit-msg"><span class="tag">normalize:</span> lowercase + strip punctuation + trim whitespace</span></div>
+      <div class="commit"><span class="commit-hash">c88f723</span><span class="commit-msg"><span class="tag">warning:</span> punctuation and case can carry real meaning</span></div>
+      <div class="commit"><span class="commit-hash">3a90de1</span><span class="commit-msg"><span class="tag">rule:</span> every preprocessing choice is a tradeoff — test it on your data</span></div>
+    </div>
+  </section>
+
+  <!-- OUTRO -->
+  <section class="outro reveal">
+    <div class="outro-mark">$ git log --oneline -1</div>
+    <h2>Coming up on Day 3</h2>
+    <p>Stopwords, stemming, and lemmatization — cutting noise and collapsing word forms even further.</p>
+    <div class="outro-next"><span class="arrow">→</span> zero-to-agentic / day-3</div>
+  </section>
+
+</div>
+
+<footer>Zero to Agentic · Day 2 of 105 · built for dev.to</footer>
+
+<script>
+  /* ---------------- shared demo rule-sets (simplified, for illustration only) ---------------- */
+  function normalizeText(text, {lower, punct, space}){
+    let t = text;
+    if (lower) t = t.toLowerCase();
+    if (punct) t = t.replace(/[.,!?;:'"()\-]/g, '');
+    if (space) t = t.replace(/\s+/g, ' ').trim();
+    return t;
+  }
+  function tokenizeText(text, method){
+    if (method === 'char') return text.replace(/\s/g,'').split('');
+    if (method === 'sub'){
+      // toy subword split: break longer words into rough 3-4 char chunks
+      return text.split(/\s+/).filter(Boolean).flatMap(w => {
+        if (w.length <= 4) return [w];
+        const chunks = [];
+        for (let i=0; i<w.length; i+=3) chunks.push(w.slice(i, i+3));
+        return chunks;
+      });
+    }
+    return text.split(/\s+/).filter(Boolean);
+  }
+
+  /* ---------------- hero: type-in tokens + click to lowercase ---------------- */
+  const heroTokensEl = document.getElementById('hero-tokens');
+  const heroCountEl = document.getElementById('hero-count');
+  const heroWords = ["The","quick","brown","fox","jumps","over","the","lazy","dog"];
+
+  heroWords.forEach((w, i) => {
+    const span = document.createElement('span');
+    span.className = 'tok';
+    span.textContent = "'" + w + "'" + (i < heroWords.length - 1 ? ',' : '');
+    span.dataset.word = w;
+    span.dataset.lowered = 'false';
+    span.addEventListener('click', () => {
+      const isLower = span.dataset.lowered === 'true';
+      span.dataset.lowered = (!isLower).toString();
+      const base = isLower ? w : w.toLowerCase();
+      span.textContent = "'" + base + "'" + (i < heroWords.length - 1 ? ',' : '');
+      span.classList.toggle('lowered', !isLower);
+    });
+    heroTokensEl.appendChild(span);
+    setTimeout(() => {
+      span.style.opacity = '1';
+      span.style.transform = 'translateY(0) scale(1)';
+    }, 70 * i + 200);
+  });
+
+  setTimeout(() => {
+    heroCountEl.innerHTML = '<span class="num">' + heroWords.length + '</span> tokens from <span class="num">1</span> string';
+  }, 70 * heroWords.length + 400);
+
+  /* ---------------- hero title word-by-word ---------------- */
+  const titleWords = ["Tokenization", "&", "Normalization"];
+  const titleEl = document.getElementById('hero-title');
+  titleWords.forEach((w, i) => {
+    const span = document.createElement('span');
+    span.className = 'word-anim';
+    span.style.animationDelay = (i * 0.09) + 's';
+    span.textContent = w + ' ';
+    if (w === '&'){ span.style.color = 'var(--text-dim)'; span.style.fontWeight = '600'; }
+    titleEl.appendChild(span);
+  });
+
+  /* ---------------- tokenization method tabs ---------------- */
+  const methodExamples = {
+    char: { input: '"chat"', chips: ['c','h','a','t'], note: 'Every character becomes a token — maximum granularity, tiny vocabulary.' },
+    word: { input: '"chat bots are helpful"', chips: ['chat','bots','are','helpful'], note: 'The most common approach — one token per word.' },
+    sub:  { input: '"playing"', chips: ['play','ing'], note: 'Splits into common chunks — handles rare or made-up words better than whole-word tokens.' }
+  };
+  const methodOutput = document.getElementById('method-output');
+  const methodInput = document.getElementById('method-input');
+  const methodNote = document.getElementById('method-note');
+
+  function renderMethod(key){
+    const m = methodExamples[key];
+    methodInput.textContent = m.input;
+    methodOutput.innerHTML = '';
+    m.chips.forEach((c, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'method-chip';
+      chip.textContent = c;
+      chip.style.animationDelay = (i * 0.06) + 's';
+      methodOutput.appendChild(chip);
+    });
+    methodNote.textContent = m.note;
+  }
+  document.querySelectorAll('.method-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.method-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderMethod(tab.dataset.method);
+    });
+  });
+  renderMethod('char');
+
+  /* ---------------- normalization convergence: click to strip/lower ---------------- */
+  document.querySelectorAll('.converge-src').forEach(src => {
+    src.addEventListener('click', () => {
+      src.querySelectorAll('.ch').forEach((ch, i) => {
+        setTimeout(() => {
+          if (ch.textContent === ch.textContent.toUpperCase() && /[A-Z]/.test(ch.textContent)){
+            ch.textContent = ch.textContent.toLowerCase();
+            ch.classList.add('lower');
+          }
+          ch.classList.toggle('strip');
+        }, i * 80);
+      });
+    });
+  });
+
+  /* ---------------- comma pitfall toggle ---------------- */
+  const commaDisplay = document.getElementById('comma-display');
+  const commaBtn = document.getElementById('comma-btn');
+  const commaMeaning = document.getElementById('comma-meaning');
+  let commaStripped = false;
+  function renderComma(){
+    commaDisplay.innerHTML = commaStripped
+      ? '"Let\'s eat<span class="removed">,</span> grandma!"'
+      : '"Let\'s eat, grandma!"';
+    commaMeaning.textContent = commaStripped
+      ? '⚠ Without the comma, this now reads as an instruction to eat grandma.'
+      : 'Punctuation removal is "safe" by default — until it changes who gets eaten.';
+    commaBtn.textContent = commaStripped ? '← restore the comma' : 'strip the comma →';
+  }
+  commaBtn.addEventListener('click', () => { commaStripped = !commaStripped; renderComma(); });
+  renderComma();
+
+  /* ---------------- playground ---------------- */
+  const pgInput = document.getElementById('pg-input');
+  const pgOut = document.getElementById('pg-out');
+  let pgMethod = 'word';
+  let pgNorm = { lower:true, punct:true, space:true };
+
+  document.querySelectorAll('#pg-method-controls .pg-toggle').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('#pg-method-controls .pg-toggle').forEach(x => x.classList.remove('on'));
+      t.classList.add('on');
+      pgMethod = t.dataset.method;
+      runPlayground();
+    });
+  });
+  document.querySelectorAll('#pg-norm-controls .pg-toggle').forEach(t => {
+    t.addEventListener('click', () => {
+      t.classList.toggle('on');
+      pgNorm[t.dataset.norm] = t.classList.contains('on');
+      runPlayground();
+    });
+  });
+
+  function runPlayground(){
+    const raw = pgInput.value;
+    if (!raw.trim()) { pgOut.innerHTML = ''; return; }
+    const normalized = normalizeText(raw, pgNorm);
+    const tokens = tokenizeText(normalized, pgMethod);
+    pgOut.innerHTML = '';
+    tokens.forEach((t, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'pg-chip';
+      chip.textContent = t;
+      chip.style.animationDelay = (i * 0.025) + 's';
+      pgOut.appendChild(chip);
+    });
+  }
+  pgInput.addEventListener('input', runPlayground);
+
+  /* ---------------- scroll reveal + progress + parallax ---------------- */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  const progressEl = document.getElementById('progress');
+  const scrollPctEl = document.getElementById('scroll-pct');
+  const gridBg = document.getElementById('gridbg');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progressEl.style.width = pct + '%';
+    scrollPctEl.textContent = Math.round(pct) + '%';
+    gridBg.style.transform = 'translateY(' + (-h.scrollTop * 0.04) + 'px)';
+  });
+  const glow = document.getElementById('glow');
+  window.addEventListener('mousemove', (e) => {
+    glow.style.transform = 'translate(' + (e.clientX - 260) + 'px, ' + (e.clientY - 260) + 'px)';
+  });
+
+  setTimeout(runPlayground, 900);
+</script>
+
+</body>
+</html>
