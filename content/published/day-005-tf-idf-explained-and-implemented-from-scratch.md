@@ -5,7 +5,7 @@ phase: Phase 1 — NLP Foundations
 recap_summary: Explained TF-IDF as a method to identify the most important words in
   documents by combining term frequency and inverse document frequency, contrasting
   it with Bag-of-Words, and demonstrating its calculation and implementation in Python.
-status: pending_review
+status: published
 title: 'Day 5: TF-IDF Explained and Implemented from Scratch'
 topic_title: TF-IDF Explained and Implemented from Scratch
 ---
