@@ -5,7 +5,7 @@ phase: Phase 1 — NLP Foundations
 recap_summary: Explained statistical language models and how n-grams are used to predict
   word sequences, including calculating probabilities using bigram counts and understanding
   basic limitations of n-gram models.
-status: pending_review
+status: published
 title: 'Day 6: N-Grams and Statistical Language Modeling'
 topic_title: N-Grams and Statistical Language Modeling
 ---
