@@ -6,7 +6,7 @@ recap_summary: Explained part-of-speech (POS) tagging, its importance in natural
   processing, common parts of speech, ambiguity in tagging, tagging methods (rules,
   statistical models, neural networks), and demonstrated POS tagging using NLTK and
   the Penn Treebank tag set.
-status: pending_review
+status: published
 title: 'Day 7: Part-of-Speech Tagging'
 topic_title: Part-of-Speech Tagging
 ---
