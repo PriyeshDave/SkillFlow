@@ -1,11 +1,10 @@
 ---
 day: 7
-generated_at: '2026-08-31T13:49:14.622999+00:00'
+generated_at: '2026-08-31T15:26:34.150753+00:00'
 phase: Phase 1 — NLP Foundations
-recap_summary: Explained part-of-speech (POS) tagging, its importance in natural language
-  processing, common parts of speech, ambiguity in tagging, tagging methods (rules,
-  statistical models, neural networks), and demonstrated POS tagging using NLTK and
-  the Penn Treebank tag set.
+recap_summary: Explained part-of-speech (POS) tagging, its importance in NLP, different
+  approaches to tagging, common tagsets, and typical challenges such as ambiguity
+  and unknown words.
 status: published
 title: 'Day 7: Part-of-Speech Tagging'
 topic_title: Part-of-Speech Tagging
@@ -15,141 +14,160 @@ topic_title: Part-of-Speech Tagging
 
 ---
 
-## What Is Part-of-Speech Tagging?
+### What Is Part-of-Speech Tagging?
 
-Part-of-speech tagging, or POS tagging, is the process of labeling each word in a sentence with its part of speech. A part of speech is a category describing how a word functions in a sentence—such as a noun, verb, or adjective.
+Part-of-speech tagging assigns each word in a sentence a label describing its role—such as noun, verb, or adjective. In simple terms, each word gets a tag that shows what job it’s doing in that sentence. For example, “run” can be a noun (“a morning run”) or a verb (“I run”). Tagging tells a computer which is which.
 
-POS tagging matters for natural language processing (NLP) because many tasks depend on understanding sentence grammar. For example, whether "run" is a noun ("a morning run") or a verb ("to run fast") changes the sentence's meaning. POS tagging is a foundational step in NLP pipelines, including language translation and sentiment analysis.
+### Parts of Speech: A Quick Refresher
 
-## A Refresher: What Are Parts of Speech?
+Here are the major parts of speech in English:
 
-English has several main parts of speech. Here are the most common:
+- **Noun:** Names a person, place, or thing.  
+  Example: “cat”, “London”, “happiness”
+- **Verb:** Describes an action or state.  
+  Example: “run”, “is”, “think”
+- **Adjective:** Describes a noun.  
+  Example: “blue”, “quick”, “loud”
+- **Adverb:** Modifies a verb, adjective, or other adverb.  
+  Example: “quickly”, “very”, “well”
+- **Pronoun:** Takes the place of a noun.  
+  Example: “he”, “she”, “it”
+- **Preposition:** Shows relationships in time or space.  
+  Example: “in”, “on”, “at”
+- **Conjunction:** Joins words or groups of words.  
+  Example: “and”, “but”, “or”
+- **Determiner:** Introduces a noun.  
+  Example: “the”, “a”, “an”, “some”
 
-- **Noun**: names a person, place, thing, or idea. Example: "cat," "happiness."
-- **Verb**: expresses an action or state. Example: "run," "is."
-- **Adjective**: describes a noun. Example: "happy," "blue."
-- **Adverb**: modifies a verb, adjective, or other adverb. Example: "quickly," "very."
-- **Pronoun**: replaces a noun. Example: "she," "it."
-- **Preposition**: shows relationships between words. Example: "in," "on," "by."
-- **Conjunction**: connects words or sentences. Example: "and," "but."
-- **Determiner**: introduces a noun. Example: "the," "a," "some."
+Recognizing these roles helps computers—and us—understand how sentences work.
 
-Most words belong mainly to one part of speech, but many can play different roles depending on context.
+### Why Tag Parts of Speech?
 
-## How Does POS Tagging Work?
+POS tagging is a building block for many natural language processing (NLP) tasks:
 
-POS tagging starts with a sentence. The sentence is split into tokens—usually words, numbers, and punctuation. Each token is then assigned a part of speech tag.
+- **Parsing sentence structure:** A computer needs to know which words have which roles to break down a sentence’s meaning.
+- **Search and retrieval:** If you search for “read” as a noun (“the read was long”), you don’t want results about “read” as a verb.
+- **Translation, text-to-speech, and more:** Knowing a word’s function helps machines translate or pronounce it correctly.
+- **Other NLP tasks:** Named entity recognition, coreference resolution (tracking “he”/“she”), and sentiment analysis usually start with tagging.
 
-The input is a list of tokens. The output is a list of pairs: (token, POS tag).
+Without POS tags, algorithms often can’t tell what a sentence really means.
 
-For example, for the sentence:  
-*"The quick brown fox jumps over the lazy dog."*  
-Tokenizing and tagging might give:  
-`[("The", "DT"), ("quick", "JJ"), ("brown", "JJ"), ("fox", "NN"), ...]`
+### Manual vs. Automated Tagging
 
-Tagging can be tricky because many words have more than one possible tag. For example, "book" can be a noun ("a book on the table") or a verb ("book a flight"). The correct tag depends on context.
+Humans can tag each word’s part of speech, but this is slow and tedious for anything longer than a short paragraph.
 
-## POS Tagging Approaches: Rules, Statistics, and Neural Methods
+As NLP grew, automating tagging became essential. Algorithms can now process millions of sentences quickly and usually with high accuracy.
 
-Early POS taggers used **rule-based systems**. These relied on hand-written patterns. For example, a rule might say "if a word follows 'the' and is not capitalized, it's probably a noun." These systems worked for simple sentences but missed many edge cases.
+### How Automated POS Tagging Works
 
-Statistical models, such as the **Hidden Markov Model (HMM)**, came next. These learn from large amounts of annotated text, estimating the probabilities of different tags for each word in context.
+Automated tagging uses two main approaches:
 
-Modern POS taggers often use **machine learning**, including neural networks. These methods need large labeled datasets but can learn complex patterns and handle ambiguous cases better.
+- **Rule-based tagging:** Applies a list of rules about English. For example, “run” after “to” is likely to be a verb.
+- **Statistical models:** Learns from lots of already-tagged text (“corpora,” the plural of “corpus,” meaning “text collection”). Early models use probability to pick the most likely tag for each word, based on its neighbors. For example, **Hidden Markov Models (HMMs)** predict tags by looking at which tags and words tend to appear together.
 
-Despite changing methods—rules, statistics, or neural networks—the goal stays the same: find the right tag for each word in context.
+One of the biggest challenges is **ambiguity**—words like “can” might be a verb (“can you help?”) or a noun (“a can of soup”). Tagging depends heavily on context to resolve these cases.
 
-## Ambiguity in POS Tagging: Why Context Matters
+### Walkthrough: Tagging a Sentence by Hand
 
-Many words have more than one possible part of speech. To pick the right one, taggers need context.
+Let’s tag this sentence:  
+**"The can will rust."**
 
-For example, the word "can":
+Word by word:
 
-- In "I can swim," "can" is a verb (in this case, an auxiliary verb helping "swim").
-- In "Pass me a can," "can" is a noun (an object).
+- **The** — Determiner (DT): Introduces a noun.
+- **can** — Noun (NN): Here, “can” is a metal container, not the verb.
+- **will** — Modal verb (MD): Shows future tense.
+- **rust** — Verb (VB): The action.
 
-Or look at "flies":
+Change the sentence to:  
+**"We can fish,"**  
+and “can” becomes a verb—meaning “to be able to.” Tagging always needs context.
 
-- "Time flies quickly." Here, "flies" is a verb (what time does).
-- "Fruit flies are pests." Here, "flies" is a noun (the insect).
+### A Minimal Code Example: POS Tagging with NLTK
 
-Taggers use surrounding words to make the right choice. Without context, it's easy to pick the wrong tag.
-
-## Hands-on: POS Tagging with NLTK
-
-[NLTK (Natural Language Toolkit)](https://www.nltk.org/) is a popular Python library for working with language. It can tokenize and POS-tag English text with minimal code.
-
-Here’s a basic example. This script takes a sentence, splits it into words, tags each word with its part of speech, and prints the results.
+Python’s NLTK library can tag parts of speech automatically:
 
 ```python
 import nltk
 
-# Download these the first time you use NLTK (uncomment to run them)
-# nltk.download("punkt")
-# nltk.download("averaged_perceptron_tagger")
+# Download resources needed for NLTK
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
 
-sentence = "Can you can a can as a canner can can a can?"
-tokens = nltk.word_tokenize(sentence)  # Split the sentence into word tokens
-
-# Tag each token with its part of speech
+sentence = "The can will rust."
+tokens = nltk.word_tokenize(sentence)
 tagged = nltk.pos_tag(tokens)
 
 for word, tag in tagged:
-    print(f"{word:10} -> {tag}")
+    print(f"{word}\t{tag}")
 ```
 
-Line-by-line breakdown:
-- `import nltk` loads the library.
-- Download commands fetch pre-trained models (run once).
-- `sentence` contains the text you want to tag.
-- `nltk.word_tokenize(sentence)` splits the sentence into tokens.
-- `nltk.pos_tag(tokens)` tags each token.
-- The loop prints each word and its tag.
+Sample output:
+```
+The    DT
+can    NN
+will   MD
+rust   VB
+.      .
+```
 
-Change the example sentence to see how POS tags change in different contexts.
+- **DT:** Determiner (“The”)
+- **NN:** Noun (“can”)
+- **MD:** Modal verb (“will”)
+- **VB:** Verb (“rust”)
+- **.**: Punctuation
 
-## Understanding the Output: POS Tag Sets
+NLTK handles both splitting the sentence into words (tokenization) and tagging. Each word gets paired with a code for its part of speech.
 
-Taggers use a "tag set"—a list of labels for different parts of speech. NLTK’s default is the **Penn Treebank tag set**, widely used in American English NLP.
+### Common Tags and Tagsets
 
-Some common tags you’ll see:
+A **tagset** is the set of all possible tags a system can use. The most common for English is the **Penn Treebank tagset**.
 
-- **NN**: noun, singular ("cat")
-- **NNS**: noun, plural ("cats")
-- **VB**: verb, base form ("run")
-- **VBD**: verb, past tense ("ran")
-- **JJ**: adjective ("blue")
-- **RB**: adverb ("quickly")
-- **DT**: determiner ("the")
-- **IN**: preposition or subordinating conjunction ("in", "because")
+Some useful tags from Penn Treebank:
 
-If you're unsure about a tag, look up the [Penn Treebank tag set online](https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html) for details.
+- **NN:** Noun, singular (“cat”)
+- **NNS:** Noun, plural (“cats”)
+- **VB:** Verb, base form (“run”)
+- **VBD:** Verb, past tense (“ran”)
+- **JJ:** Adjective (“quick”)
+- **RB:** Adverb (“quickly”)
+- **DT:** Determiner (“the”)
+- **IN:** Preposition (“in”)
+- **PRP:** Personal pronoun (“she”)
+- **CC:** Coordinating conjunction (“and”)
 
-In the code example above, "can" appears multiple times, in both noun and verb contexts. The tagger uses context to try to assign the right tag each time. This demonstrates how POS tagging is contextual and automatic, but can still make mistakes with tricky sentences or rare usages.
+The abbreviations also encode details like number (singular/plural) or tense.
 
-Understanding POS tagging is key for many downstream NLP tasks. It shows how computers start to interpret language—using patterns, categories, and context to make sense of text.
+### Limitations and Sources of Error
+
+Automated part-of-speech tagging isn’t flawless. Some common issues are:
+
+- **Unknown words:** Taggers may guess the role of a word they haven’t seen before, using spelling or context clues.
+- **Ambiguity:** Words with multiple meanings (“can,” “lead,” “bark”) can confuse taggers if the context isn’t clear.
+- **Unusual sentence patterns:** Poetry, slang, or highly technical writing can trip up taggers not trained on similar text.
+- **Tokenization mistakes:** If a sentence isn’t split into words correctly—such as missing a punctuation mark—tagging will be off.
+
+Despite these hurdles, automated POS tagging is reliable enough to kick-start more advanced NLP tasks. As algorithms and training data improve, so does tagging. Edge cases will always be tricky, but accuracy is high for typical text.
 
 ---
 
 ## Key Takeaways
 
-- POS tagging labels each word in a sentence with its grammatical function.
-- Tagging accuracy depends heavily on context due to word ambiguity.
-- Modern POS taggers use statistical and neural methods for higher accuracy.
-- NLTK in Python provides easy tools for POS tagging with the Penn Treebank tag set.
-- Understanding output tag codes is crucial for interpreting POS tagging results.
+- POS tagging labels each word with its grammatical role, like noun or verb.
+- Automated tagging uses rule-based and statistical methods to assign tags.
+- The Penn Treebank is the most widely used English tagset.
+- Ambiguous or unknown words present challenges for tagging accuracy.
+- Python's NLTK library can automatically tag words in a sentence.
 
 ## Try It Yourself
 
-Pick three short English sentences—either provided or of your own choosing. Tokenize and POS-tag each sentence using NLTK. For any POS tags you don't recognize, consult the Penn Treebank tag guide to find their meaning.
+Write a Python script that asks for a sentence, then uses NLTK to tag each word by part of speech. In your output, pick any two tags assigned by NLTK, look up their meanings in the Penn Treebank tagset, and write a one-sentence explanation for each.
 
 ## Further Resources
 
-- 🎥 [Part Of Speech POS Tagging: NLP Tutorial For Beginners – codebasics (YouTube)](https://www.youtube.com/watch?v=gdHWoQWZGkk)
-- 🎥 [POS Tagging | Part of Speech Tagging in NLP | Hidden Markov Models in NLP | Viterbi Algorithm in NLP – CampusX (YouTube)](https://www.youtube.com/watch?v=269IGagoJfs)
-- 📘 [Tagger · spaCy API Documentation](https://spacy.io/api/tagger/)
-- 📄 [5. Categorizing and Tagging Words – NLTK Book Chapter (NLTK)](https://www.nltk.org/book/ch05.html)
-- 📄 [Part‑Of‑Speech Tagging With Hidden Markov Model – Baeldung](https://www.baeldung.com/cs/nlp-hmm-pos-tags)
+- 🎥 [Part‑of‑Speech (POS) Tagging Tutorial: Teaching AI Grammar with NLTK & spaCy](https://www.youtube.com/watch?v=N5KRLY4es_A)
+- 📘 [Categorizing and Tagging Words — NLTK Book, Chapter 5](https://www.nltk.org/book/ch05.html)
+- 📘 [NLTK Tagging Module Documentation](https://www.nltk.org/api/nltk.tag)
 
 ---
 
