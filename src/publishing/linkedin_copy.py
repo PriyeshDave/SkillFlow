@@ -7,25 +7,51 @@ pipeline: today's recap_summary and the previous day's recap_summary both
 already exist, and the Key Takeaways bullets are already sitting in the
 lesson's own Markdown body.
 
-Note on formatting history:
-1. An earlier version backslash-escaped punctuation and used a
-   "{hashtag|#|Tag}" template syntax, based on a developer forum report
-   about LinkedIn's internal 'little' text format. That was wrong: both
-   showed up as literal, broken text on the live post.
-2. After removing those, posts still truncated -- but debug logs proved
-   the full, correct text was being sent and accepted by the API (a valid
-   post URN was returned every time). The one thing present in every
-   single failing post: the bold-Unicode header (the "Mathematical Bold"
-   character trick used to fake bold text, since LinkedIn has no native
-   bold). That Unicode block is also a well-known signal used heavily by
-   spam/growth-hacking accounts, and is a plausible trigger for LinkedIn's
-   spam/quality filters to suppress the rest of a post's visible content
-   even though the API accepted it. This version drops that trick
-   entirely and uses plain text with an emoji marker for emphasis instead.
+Note on formatting history (each step backed by direct evidence from live
+posts, not guesswork):
+1. Backslash-escaping reserved characters + a "{hashtag|#|Tag}" template
+   syntax: wrong. Both showed up as literal, broken text on the live post.
+2. Removing all of that: posts still truncated, cut off exactly before an
+   unescaped "(" character -- twice, on two different posts, right before
+   "(NLP)" and "(NER)". This is the actual trigger.
+3. Backslash-escaping those characters DID stop the truncation (full post
+   went through) but left ugly visible backslashes in the text, since
+   LinkedIn parses the escape (preventing truncation) but doesn't strip it
+   for display.
+4. This version: replace reserved characters with visually near-identical
+   Unicode "fullwidth" look-alikes (e.g. the fullwidth parenthesis "（"
+   instead of ASCII "("). These are different codepoints entirely, so
+   LinkedIn's parser never treats them as reserved trigger characters, and
+   there's no visible escape artifact since they render as ordinary-
+   looking (very slightly wider) punctuation.
+
+Applied only to free-text fields (recap summaries, takeaways, topic
+titles) -- never to the deliberately-constructed "#hashtag" line, since
+those need to stay literal ASCII "#" for LinkedIn to auto-link them.
 """
 from __future__ import annotations
 
 import re
+
+# ASCII reserved character -> visually near-identical Unicode fullwidth
+# look-alike. Different codepoints entirely, so LinkedIn's parser doesn't
+# treat them as special, but they read as normal punctuation to a human.
+_SAFE_CHAR_MAP = {
+    "(": "\uFF08", ")": "\uFF09",
+    "[": "\uFF3B", "]": "\uFF3D",
+    "{": "\uFF5B", "}": "\uFF5D",
+    "@": "\uFF20", "*": "\uFF0A", "~": "\uFF5E",
+    "<": "\uFF1C", ">": "\uFF1E",
+    "_": "\uFF3F", "|": "\uFF5C", "\\": "\uFF3C",
+    # Deliberately NOT mapping "#" here -- that character is only ever
+    # used in the intentionally-built hashtag line, which must stay
+    # literal ASCII "#" for LinkedIn to auto-link it. See _safe_text().
+}
+
+
+def _safe_text(text: str) -> str:
+    """Swaps reserved characters for safe look-alikes in free-text fields."""
+    return "".join(_SAFE_CHAR_MAP.get(ch, ch) for ch in text)
 
 
 def _extract_key_takeaways(post_markdown: str) -> list[str]:
@@ -78,22 +104,21 @@ def generate_linkedin_copy(
 ) -> str:
     day_width = len(str(total_days))
     day_str = str(day_number).zfill(day_width)
-    # Plain text header, no Unicode bold trick -- see module docstring.
-    header = f"\U0001F4C5 Day {day_str}/{total_days}: {topic_title}"
+    header = f"\U0001F4C5 Day {day_str}/{total_days}: {_safe_text(topic_title)}"
 
     lines = [header, ""]
 
     if previous_summary:
-        lines.append(f"📌 Yesterday's Recap: {previous_summary}")
+        lines.append(f"\U0001F4CC Yesterday's Recap: {_safe_text(previous_summary)}")
         lines.append("")
 
-    lines.append(f"📖 Today's Lesson: {today_summary}")
+    lines.append(f"\U0001F4D6 Today's Lesson: {_safe_text(today_summary)}")
     lines.append("")
 
     takeaways = _extract_key_takeaways(post_markdown)
     if takeaways:
-        lines.append("💡 Key Takeaways:")
-        lines.extend(f"- {t}" for t in takeaways)
+        lines.append("\U0001F4A1 Key Takeaways:")
+        lines.extend(f"- {_safe_text(t)}" for t in takeaways)
         lines.append("")
 
     hashtags = ["#AIEngineering", "#100DaysOfCode"]
@@ -104,20 +129,22 @@ def generate_linkedin_copy(
     lines.append("")
 
     lines.append(
-        f'✨ Curated by {product_name} — your AI-powered tutor automation '
-        f'behind "{series_name}," turning a 105-day AI curriculum into one '
-        f"lesson a day."
+        _safe_text(
+            f'\u2728 Curated by {product_name} \u2014 your AI-powered tutor automation '
+            f'behind "{series_name}," turning a 105-day AI curriculum into one '
+            f"lesson a day."
+        )
     )
     lines.append("")
-    lines.append("Happy Learning! 🎉")
+    lines.append("Happy Learning! \U0001F389")
     lines.append("")
-    lines.append("Feel free to comment your doubts below 👇")
+    lines.append("Feel free to comment your doubts below \U0001F447")
     lines.append("")
 
     # URL placed as the absolute LAST line, deliberately. No content.article
     # card is attached (see linkedin_publish.py), so this is the only way
     # readers reach the article. Keeping it last means nothing is lost even
     # if any future platform quirk affects text after a URL.
-    lines.append(f"🔗 Read the full lesson: {devto_url}")
+    lines.append(f"\U0001F517 Read the full lesson: {devto_url}")
 
     return "\n".join(lines)
