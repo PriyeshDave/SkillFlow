@@ -5,7 +5,7 @@ phase: Phase 1 — NLP Foundations
 recap_summary: Explained Named Entity Recognition (NER), detailing its role in finding
   and categorizing named entities in text, standard entity types, rule-based and machine
   learning approaches, practical code examples, and real-world applications and challenges.
-status: pending_review
+status: published
 title: 'Day 8: Named Entity Recognition (NER) Fundamentals'
 topic_title: Named Entity Recognition (NER) Fundamentals
 ---
