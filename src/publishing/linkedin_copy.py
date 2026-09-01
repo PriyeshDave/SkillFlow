@@ -7,35 +7,25 @@ pipeline: today's recap_summary and the previous day's recap_summary both
 already exist, and the Key Takeaways bullets are already sitting in the
 lesson's own Markdown body.
 
-Note on formatting -- LinkedIn's commentary field is plain text: an
-earlier version of this file backslash-escaped punctuation and used a
-"{hashtag|#|Tag}" template syntax, based on a developer forum report about
-LinkedIn's internal 'little' text format. That turned out to be wrong for
-this API: both the escape backslashes and the template braces showed up
-as literal, broken text on the live post instead of being interpreted.
-LinkedIn's own feed renderer auto-detects and hyperlinks plain "#word"
-hashtags with no special syntax required -- the same as typing a hashtag
-directly into LinkedIn's own compose box. This version sends plain text
-with plain hashtags and no escaping.
+Note on formatting history:
+1. An earlier version backslash-escaped punctuation and used a
+   "{hashtag|#|Tag}" template syntax, based on a developer forum report
+   about LinkedIn's internal 'little' text format. That was wrong: both
+   showed up as literal, broken text on the live post.
+2. After removing those, posts still truncated -- but debug logs proved
+   the full, correct text was being sent and accepted by the API (a valid
+   post URN was returned every time). The one thing present in every
+   single failing post: the bold-Unicode header (the "Mathematical Bold"
+   character trick used to fake bold text, since LinkedIn has no native
+   bold). That Unicode block is also a well-known signal used heavily by
+   spam/growth-hacking accounts, and is a plausible trigger for LinkedIn's
+   spam/quality filters to suppress the rest of a post's visible content
+   even though the API accepted it. This version drops that trick
+   entirely and uses plain text with an emoji marker for emphasis instead.
 """
 from __future__ import annotations
 
 import re
-
-
-def _to_bold_unicode(text: str) -> str:
-    """Unicode 'Mathematical Bold' mapping -- LinkedIn has no native bold."""
-    result = []
-    for ch in text:
-        if "A" <= ch <= "Z":
-            result.append(chr(0x1D400 + (ord(ch) - ord("A"))))
-        elif "a" <= ch <= "z":
-            result.append(chr(0x1D41A + (ord(ch) - ord("a"))))
-        elif "0" <= ch <= "9":
-            result.append(chr(0x1D7CE + (ord(ch) - ord("0"))))
-        else:
-            result.append(ch)
-    return "".join(result)
 
 
 def _extract_key_takeaways(post_markdown: str) -> list[str]:
@@ -88,7 +78,8 @@ def generate_linkedin_copy(
 ) -> str:
     day_width = len(str(total_days))
     day_str = str(day_number).zfill(day_width)
-    header = _to_bold_unicode(f"Day {day_str}/{total_days}: {topic_title}")
+    # Plain text header, no Unicode bold trick -- see module docstring.
+    header = f"\U0001F4C5 Day {day_str}/{total_days}: {topic_title}"
 
     lines = [header, ""]
 
