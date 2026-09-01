@@ -6,7 +6,7 @@ recap_summary: Explained Named Entity Recognition (NER) as an NLP technique for 
   and categorizing real-world entities (such as people, organizations, and locations)
   in text, including typical entity types, system approaches, and practical usage
   with spaCy.
-status: pending_review
+status: published
 title: 'Day 8: Named Entity Recognition (NER) Fundamentals'
 topic_title: Named Entity Recognition (NER) Fundamentals
 ---
