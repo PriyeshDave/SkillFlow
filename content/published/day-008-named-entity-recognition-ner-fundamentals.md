@@ -5,7 +5,7 @@ phase: Phase 1 — NLP Foundations
 recap_summary: Explained named entity recognition (NER) in NLP, covering entity types,
   the BIO annotation scheme, rule-based versus machine learning approaches, and practical
   NER using spaCy.
-status: pending_review
+status: published
 title: 'Day 8: Named Entity Recognition (NER) Fundamentals'
 topic_title: Named Entity Recognition (NER) Fundamentals
 ---
