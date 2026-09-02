@@ -5,7 +5,7 @@ phase: Phase 1 — NLP Foundations
 recap_summary: Explained the fundamentals of text classification, focusing on bag-of-words
   representations and comparing Naive Bayes and logistic regression classifiers for
   labeling text such as spam detection.
-status: pending_review
+status: published
 title: 'Day 9: Text Classification with Naive Bayes and Logistic Regression'
 topic_title: Text Classification with Naive Bayes and Logistic Regression
 ---
