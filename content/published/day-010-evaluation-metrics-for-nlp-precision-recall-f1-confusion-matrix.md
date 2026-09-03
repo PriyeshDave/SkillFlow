@@ -5,7 +5,7 @@ phase: Phase 1 — NLP Foundations
 recap_summary: Explained core evaluation metrics for NLP classification tasks, including
   accuracy, precision, recall, F1 score, and the confusion matrix, highlighting their
   importance and pitfalls in real-world scenarios.
-status: pending_review
+status: published
 title: 'Day 10: Evaluation Metrics for NLP: Precision, Recall, F1, Confusion Matrix'
 topic_title: 'Evaluation Metrics for NLP: Precision, Recall, F1, Confusion Matrix'
 ---
