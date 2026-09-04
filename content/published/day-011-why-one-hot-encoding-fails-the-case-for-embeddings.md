@@ -5,7 +5,7 @@ phase: Phase 2 — Word Representations & Embeddings
 recap_summary: Explained one-hot encoding as a method for representing words as sparse
   vectors, highlighted its limitations regarding similarity and efficiency, and introduced
   the concept of word embeddings as an improvement.
-status: pending_review
+status: published
 title: 'Day 11: Why One-Hot Encoding Fails: The Case for Embeddings'
 topic_title: 'Why One-Hot Encoding Fails: The Case for Embeddings'
 ---
