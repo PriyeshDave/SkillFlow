@@ -5,7 +5,7 @@ phase: Phase 2 — Word Representations & Embeddings
 recap_summary: Explained how Word2Vec models generate word embeddings using skip-gram
   and CBOW techniques, compared their methods and trade-offs, and introduced a minimal
   example using Gensim.
-status: pending_review
+status: published
 title: 'Day 12: Word2Vec Explained: Skip-Gram and CBOW'
 topic_title: 'Word2Vec Explained: Skip-Gram and CBOW'
 ---
