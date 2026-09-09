@@ -6,7 +6,7 @@ recap_summary: Explained the motivation and workings of GloVe word embeddings, i
   how they leverage both local context and global word co-occurrence statistics, described
   the model's loss function and practical use of pretrained vectors, and compared
   GloVe to Word2Vec in terms of methodology and use cases.
-status: pending_review
+status: published
 title: 'Day 13: GloVe: Global Vectors for Word Representation'
 topic_title: 'GloVe: Global Vectors for Word Representation'
 ---
