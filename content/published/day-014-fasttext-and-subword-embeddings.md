@@ -5,7 +5,7 @@ phase: Phase 2 — Word Representations & Embeddings
 recap_summary: Explained how word embeddings represent words as vectors, the limitations
   of classic approaches like one-hot encoding, and how FastText uses subword units
   to create robust embeddings that handle rare, new, or misspelled words.
-status: pending_review
+status: published
 title: 'Day 14: FastText and Subword Embeddings'
 topic_title: FastText and Subword Embeddings
 ---
