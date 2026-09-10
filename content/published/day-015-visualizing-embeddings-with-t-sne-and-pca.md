@@ -6,7 +6,7 @@ recap_summary: Explained why visualizing word embeddings is useful, introduced t
   challenges of high-dimensional data, and compared two popular dimensionality reduction
   techniques—PCA and t-SNE—for plotting embeddings, with code examples for practical
   visualization.
-status: pending_review
+status: published
 title: 'Day 15: Visualizing Embeddings with t-SNE and PCA'
 topic_title: Visualizing Embeddings with t-SNE and PCA
 ---
