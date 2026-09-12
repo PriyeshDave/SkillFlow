@@ -5,7 +5,7 @@ phase: Phase 2 — Word Representations & Embeddings
 recap_summary: Explained cosine similarity, how it measures the direction-based similarity
   between word embedding vectors, and its use in semantic search to find the most
   meaningfully related items based on embeddings rather than exact keywords.
-status: pending_review
+status: published
 title: 'Day 16: Cosine Similarity and Semantic Search Basics'
 topic_title: Cosine Similarity and Semantic Search Basics
 ---
