@@ -5,7 +5,7 @@ phase: Phase 3 — Sequence Models & Deep Learning for NLP
 recap_summary: Explained the structure and function of neural networks, including
   neurons, layers, weights, biases, and activation functions, and how neural networks
   are trained to solve natural language processing tasks.
-status: pending_review
+status: published
 title: 'Day 17: Neural Networks Refresher for NLP Engineers'
 topic_title: Neural Networks Refresher for NLP Engineers
 ---
