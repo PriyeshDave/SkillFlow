@@ -6,7 +6,7 @@ recap_summary: Explained the vanishing gradient problem in deep neural networks,
   how gradients shrink as they move backward through layers—especially with activation
   functions like sigmoid or tanh—and why this hampers learning in deep and sequence
   models such as RNNs.
-status: pending_review
+status: published
 title: 'Day 19: The Vanishing Gradient Problem'
 topic_title: The Vanishing Gradient Problem
 ---
