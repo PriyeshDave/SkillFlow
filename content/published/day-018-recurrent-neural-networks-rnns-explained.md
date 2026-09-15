@@ -8,7 +8,7 @@ recap_summary: Explained why sequential dependencies are critical in language ta
   core computation, illustrated step-by-step processing in code, and discussed the
   limitations of vanilla RNNs, motivating the development of improved architectures
   like LSTMs and GRUs.
-status: pending_review
+status: published
 title: 'Day 18: Recurrent Neural Networks (RNNs) Explained'
 topic_title: Recurrent Neural Networks (RNNs) Explained
 ---
