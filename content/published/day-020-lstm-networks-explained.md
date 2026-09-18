@@ -5,7 +5,7 @@ phase: Phase 3 — Sequence Models & Deep Learning for NLP
 recap_summary: Explained the limitations of simple RNNs with long-term dependencies
   in sequence data, introduced LSTM cells and their gating mechanisms, and demonstrated
   how LSTMs solve the memory retention issue in tasks like text prediction.
-status: pending_review
+status: published
 title: 'Day 20: LSTM Networks Explained'
 topic_title: LSTM Networks Explained
 ---
