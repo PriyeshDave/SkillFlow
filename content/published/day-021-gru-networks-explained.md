@@ -6,7 +6,7 @@ recap_summary: Explained the limitations of vanilla RNNs with sequence data due 
   the vanishing gradient problem, and introduced GRU (Gated Recurrent Unit) networks
   as an improved approach for handling memory in sequences by using update and reset
   gates to control information flow.
-status: pending_review
+status: published
 title: 'Day 21: GRU Networks Explained'
 topic_title: GRU Networks Explained
 ---
