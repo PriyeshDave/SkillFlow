@@ -5,7 +5,7 @@ phase: Phase 3 — Sequence Models & Deep Learning for NLP
 recap_summary: Explained the structure and purpose of sequence-to-sequence (seq2seq)
   models, detailing how encoder-decoder architectures process and generate variable-length
   input and output sequences, with a hands-on example using character sequence reversal.
-status: pending_review
+status: published
 title: 'Day 22: Sequence-to-Sequence Models'
 topic_title: Sequence-to-Sequence Models
 ---
