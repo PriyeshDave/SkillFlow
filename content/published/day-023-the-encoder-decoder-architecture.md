@@ -6,7 +6,7 @@ recap_summary: Explained the encoder-decoder architecture in neural networks, de
   how inputs are encoded into a context vector and then decoded to generate outputs
   of possibly differing lengths and formats, with applications including translation
   and summarization.
-status: pending_review
+status: published
 title: 'Day 23: The Encoder-Decoder Architecture'
 topic_title: The Encoder-Decoder Architecture
 ---
