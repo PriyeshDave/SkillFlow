@@ -5,7 +5,7 @@ phase: Phase 3 — Sequence Models & Deep Learning for NLP
 recap_summary: Explained how attention mechanisms help sequence models focus on relevant
   information across entire inputs, overcoming limitations of traditional RNNs and
   LSTMs when connecting distant parts of a sequence.
-status: pending_review
+status: published
 title: 'Day 24: Attention Mechanism: The Core Intuition'
 topic_title: 'Attention Mechanism: The Core Intuition'
 ---
