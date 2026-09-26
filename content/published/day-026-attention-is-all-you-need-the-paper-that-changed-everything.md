@@ -5,7 +5,7 @@ phase: Phase 4 — The Transformer Revolution
 recap_summary: Explained the importance of sequence in language understanding, contrasted
   traditional sequence models like RNNs and LSTMs with Transformers, and introduced
   attention mechanisms as the foundation of modern NLP architectures.
-status: pending_review
+status: published
 title: 'Day 26: "Attention Is All You Need": The Paper That Changed Everything'
 topic_title: '"Attention Is All You Need": The Paper That Changed Everything'
 ---
