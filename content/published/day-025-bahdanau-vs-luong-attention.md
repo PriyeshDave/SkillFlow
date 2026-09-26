@@ -6,7 +6,7 @@ recap_summary: Explained the concept of attention in sequence models, detailing 
   Bahdanau (additive) and Luong (multiplicative) attention mechanisms work to let
   decoders focus on relevant encoder outputs, with step-by-step breakdowns and code
   examples for both approaches.
-status: pending_review
+status: published
 title: 'Day 25: Bahdanau vs. Luong Attention'
 topic_title: Bahdanau vs. Luong Attention
 ---
