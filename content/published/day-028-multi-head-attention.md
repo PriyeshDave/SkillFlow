@@ -6,7 +6,7 @@ recap_summary: Explained multi-head attention as used in Transformer models, det
   how multiple attention heads enable the capture of diverse and overlapping patterns
   within input sequences through independent, parallel computations, culminating in
   a combined representation.
-status: pending_review
+status: published
 title: 'Day 28: Multi-Head Attention'
 topic_title: Multi-Head Attention
 ---
