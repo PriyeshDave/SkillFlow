@@ -7,7 +7,7 @@ recap_summary: Explained the limitations of traditional sequence models and intr
   Detailed the self-attention mechanism using queries, keys, and values, and worked
   through an explicit step-by-step numerical example to demonstrate how self-attention
   creates context-aware word representations.
-status: pending_review
+status: published
 title: 'Day 27: Self-Attention Explained From Scratch'
 topic_title: Self-Attention Explained From Scratch
 ---
