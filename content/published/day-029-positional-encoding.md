@@ -5,7 +5,7 @@ phase: Phase 4 — The Transformer Revolution
 recap_summary: Explained how positional encoding gives Transformers a sense of word
   order, described the difference between learnable and fixed (sinusoidal) encodings,
   and showed how sinusoidal positional encoding works and is combined with word embeddings.
-status: pending_review
+status: published
 title: 'Day 29: Positional Encoding'
 topic_title: Positional Encoding
 ---
