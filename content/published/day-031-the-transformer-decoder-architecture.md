@@ -5,7 +5,7 @@ phase: Phase 4 — The Transformer Revolution
 recap_summary: Explained the structure and function of a transformer decoder, including
   the roles of masked self-attention, positional encoding, feed-forward networks,
   layer normalization, and how these components enable autoregressive sequence generation.
-status: pending_review
+status: published
 title: 'Day 31: The Transformer Decoder Architecture'
 topic_title: The Transformer Decoder Architecture
 ---
