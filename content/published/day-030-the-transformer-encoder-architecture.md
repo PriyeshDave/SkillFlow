@@ -5,7 +5,7 @@ phase: Phase 4 — The Transformer Revolution
 recap_summary: Explained the limitations of RNN/LSTM sequence models and introduced
   the Transformer architecture, highlighting self-attention, parallelism, and the
   structure of a Transformer encoder with practical PyTorch examples.
-status: pending_review
+status: published
 title: 'Day 30: The Transformer Encoder Architecture'
 topic_title: The Transformer Encoder Architecture
 ---
