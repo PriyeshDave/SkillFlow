@@ -5,7 +5,7 @@ phase: Phase 4 — The Transformer Revolution
 recap_summary: Explained the training challenges in deep neural networks, introduced
   layer normalization and residual connections, and showed how these methods stabilize
   learning in deep architectures like transformers.
-status: pending_review
+status: published
 title: 'Day 32: Layer Normalization and Residual Connections'
 topic_title: Layer Normalization and Residual Connections
 ---
