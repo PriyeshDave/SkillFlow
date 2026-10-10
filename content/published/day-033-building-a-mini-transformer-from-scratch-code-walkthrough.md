@@ -5,7 +5,7 @@ phase: Phase 4 — The Transformer Revolution
 recap_summary: Explained the architecture and mechanics of transformers in NLP, focusing
   on how self-attention enables each token to access context from the full sequence
   and showing a minimal implementation in NumPy.
-status: pending_review
+status: published
 title: 'Day 33: Building a Mini Transformer From Scratch (Code Walkthrough)'
 topic_title: Building a Mini Transformer From Scratch (Code Walkthrough)
 ---
