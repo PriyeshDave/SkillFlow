@@ -5,7 +5,7 @@ phase: Phase 5 — Pretraining & Language Models
 recap_summary: Explained the concept of pretraining in NLP, highlighted why it is
   foundational, introduced transfer learning, and demonstrated how pretrained models
   are used in practice with Hugging Face Transformers.
-status: pending_review
+status: published
 title: 'Day 34: What Is Pretraining? Transfer Learning for NLP'
 topic_title: What Is Pretraining? Transfer Learning for NLP
 ---
