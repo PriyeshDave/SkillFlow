@@ -6,7 +6,7 @@ recap_summary: Explained how BERT uses bidirectional transformer encoders and ma
   language modeling to create contextualized word representations, enabling state-of-the-art
   understanding and prediction in NLP tasks. Introduced the concepts of tokenization,
   attention, fine-tuning, and provided a code example for masked token prediction.
-status: pending_review
+status: published
 title: 'Day 35: BERT: Architecture and Masked Language Modeling'
 topic_title: 'BERT: Architecture and Masked Language Modeling'
 ---
