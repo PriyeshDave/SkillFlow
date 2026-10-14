@@ -5,7 +5,7 @@ phase: Phase 5 — Pretraining & Language Models
 recap_summary: Explained the concept and process of fine-tuning BERT on downstream
   NLP tasks, specifically illustrating how BERT can be adapted for text classification
   using labeled data and transfer learning principles.
-status: pending_review
+status: published
 title: 'Day 36: Fine-Tuning BERT for Downstream Tasks'
 topic_title: Fine-Tuning BERT for Downstream Tasks
 ---
