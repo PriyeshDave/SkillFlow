@@ -5,7 +5,7 @@ phase: Phase 5 — Pretraining & Language Models
 recap_summary: Explained the three main transformer architectures—encoder-only, decoder-only,
   and encoder-decoder—with a focus on how decoder-only models like GPT perform autoregressive
   text generation using masked (causal) self-attention.
-status: pending_review
+status: published
 title: 'Day 37: GPT Architecture: Decoder-Only Transformers'
 topic_title: 'GPT Architecture: Decoder-Only Transformers'
 ---
