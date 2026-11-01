@@ -5,7 +5,7 @@ phase: Phase 5 — Pretraining & Language Models
 recap_summary: Explained the structure and evolution of GPT models, detailing the
   shift from GPT-1 to GPT-3, the significance of scale, and how these models generate
   coherent text based on next word prediction using transformers.
-status: pending_review
+status: published
 title: 'Day 38: GPT-1 to GPT-3: The Evolution of Scale'
 topic_title: 'GPT-1 to GPT-3: The Evolution of Scale'
 ---
