@@ -5,7 +5,7 @@ phase: Phase 6 — The Rise of LLMs
 recap_summary: Explained in-context learning, where language models adapt to new tasks
   by imitating examples in the input prompt rather than updating their internal parameters,
   and contrasted this approach with traditional fine-tuning.
-status: pending_review
+status: published
 title: 'Day 43: In-Context Learning Explained'
 topic_title: In-Context Learning Explained
 ---
