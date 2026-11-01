@@ -5,7 +5,7 @@ phase: Phase 5 — Pretraining & Language Models
 recap_summary: Explained the T5 model's text-to-text approach for unifying multiple
   NLP tasks using a common transformer architecture and task-specific prefixes, covering
   examples like summarization, translation, and sentiment analysis.
-status: pending_review
+status: published
 title: 'Day 39: T5 and the Text-to-Text Framework'
 topic_title: T5 and the Text-to-Text Framework
 ---
