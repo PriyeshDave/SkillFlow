@@ -5,7 +5,7 @@ phase: Phase 5 — Pretraining & Language Models
 recap_summary: Explained the importance of tokenization in NLP, comparing word, subword,
   and character tokenization, and introduced the key algorithms BPE, WordPiece, and
   SentencePiece, highlighting their differences and practical applications.
-status: pending_review
+status: published
 title: 'Day 40: Tokenization Deep Dive: BPE, WordPiece, SentencePiece'
 topic_title: 'Tokenization Deep Dive: BPE, WordPiece, SentencePiece'
 ---
