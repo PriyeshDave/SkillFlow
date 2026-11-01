@@ -5,7 +5,7 @@ phase: Phase 6 — The Rise of LLMs
 recap_summary: Explained what determines a machine learning model's size—specifically
   the number of learnable parameters—and how this impacts capacity, complexity, resource
   needs, and real-world definitions of 'large' in language models.
-status: pending_review
+status: published
 title: 'Day 42: What Makes a Model "Large"? Defining LLMs'
 topic_title: What Makes a Model "Large"? Defining LLMs
 ---
