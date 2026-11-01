@@ -4,7 +4,7 @@ generated_at: '2026-10-26T15:34:43.997354+00:00'
 phase: Phase 6 — The Rise of LLMs
 recap_summary: Explained zero-shot, one-shot, and few-shot learning in LLMs, showing
   how the number and quality of prompt examples affect task adaptation and results.
-status: pending_review
+status: published
 title: 'Day 44: Zero-Shot, One-Shot, and Few-Shot Learning'
 topic_title: Zero-Shot, One-Shot, and Few-Shot Learning
 ---
