@@ -5,7 +5,7 @@ phase: Phase 6 — The Rise of LLMs
 recap_summary: Explained Reinforcement Learning from Human Feedback (RLHF), detailing
   its three-phase pipeline for aligning large language models with human values and
   preferences through supervised instruction, reward modeling, and reinforcement learning.
-status: pending_review
+status: published
 title: 'Day 46: RLHF: Reinforcement Learning from Human Feedback'
 topic_title: 'RLHF: Reinforcement Learning from Human Feedback'
 ---
