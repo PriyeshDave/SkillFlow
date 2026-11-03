@@ -6,7 +6,7 @@ recap_summary: Explained emergent abilities in large language models, describing
   new skills—such as arithmetic, translation, code generation, and in-context learning—can
   appear unexpectedly when models reach a certain scale, with examples from nature
   and experiments in AI.
-status: pending_review
+status: published
 title: 'Day 45: Emergent Abilities in LLMs'
 topic_title: Emergent Abilities in LLMs
 ---
