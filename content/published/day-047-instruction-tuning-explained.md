@@ -6,7 +6,7 @@ recap_summary: Explained the concept of instruction tuning for large language mo
   distinguishing it from traditional next-word prediction training and illustrating
   how it enables models to follow explicit commands using instruction/response examples
   and fine-tuning.
-status: pending_review
+status: published
 title: 'Day 47: Instruction Tuning Explained'
 topic_title: Instruction Tuning Explained
 ---
