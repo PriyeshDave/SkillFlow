@@ -5,7 +5,7 @@ phase: Phase 6 — The Rise of LLMs
 recap_summary: Explained the concept of a context window in large language models
   (LLMs), detailing how text is tokenized, why context window limits matter, and how
   to count and manage tokens for effective application usage.
-status: pending_review
+status: published
 title: 'Day 49: Understanding Context Windows'
 topic_title: Understanding Context Windows
 ---
