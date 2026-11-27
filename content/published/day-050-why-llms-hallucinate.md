@@ -4,7 +4,7 @@ generated_at: '2026-11-03T16:41:50.014350+00:00'
 phase: Phase 6 — The Rise of LLMs
 recap_summary: Explained what hallucinations are in large language models, why they
   happen, how model design contributes to them, and current limits in mitigating hallucinations.
-status: pending_review
+status: published
 title: 'Day 50: Why LLMs Hallucinate'
 topic_title: Why LLMs Hallucinate
 ---
