@@ -5,7 +5,7 @@ phase: Phase 6 — The Rise of LLMs
 recap_summary: Explained the fundamentals of Large Language Models (LLMs), the distinction
   between open-source and closed-source LLMs, their licensing implications for engineering
   and product use, and compared examples of each type along with their practical tradeoffs.
-status: pending_review
+status: published
 title: 'Day 48: Open-Source vs. Closed-Source LLMs: The Landscape'
 topic_title: 'Open-Source vs. Closed-Source LLMs: The Landscape'
 ---
